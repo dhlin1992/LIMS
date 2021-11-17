@@ -1339,9 +1339,9 @@ def emailListCobas (extracted_patient_values):
 	return patient_list
 
 def EmailNotification (anpac_id_list, reciever_email):
-	email_account = EmailAccounts
-	email = 'dennis_lin@anpacbio.com'
-	password = 'dwcepnbrmrnnfckg'
+	email_account = EmailAccounts.objects.get(account_name= 'EmailNotification')
+	email = email_account.email_address
+	password = email_account.email_password
 	smtp_object = smtplib.SMTP('smtp.gmail.com', 587)
 	smtp_object.ehlo()
 	smtp_object.starttls()
