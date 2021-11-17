@@ -1,0 +1,35 @@
+from django.urls import path
+from . import views
+
+
+urlpatterns = [
+    path('', views.home, name='home'),
+    path('assay/', views.assay, name='assay'),
+    path('html_testing/', views.html_testing, name='html_testing'),
+    path('requisition_form/', views.requisition_form,name='requisition_form'),
+    path('search_req/', views.search_req, name='search_req'),
+    path('open_report/<anpac_id>', views.open_report, name='open_report'),
+    path('succcess/', views.success, name='success'),
+    path('login', views.user_login, name='user_login'),
+    path('import_requisitions/', views.import_requisitions, name='import_requisitions'),
+    path('logout/', views.logout_user, name='logout_user'),
+    path('register/', views.register_user, name='register'),
+    path('edit_profile/', views.edit_profile,name='edit_profile'),
+    path('change_password/', views.change_password, name='change_password'),
+    path('test_status_update/',views.test_status_update, name='test_status_update'),
+    path('result_entry/', views.result_entry, name='result_entry'),
+    path('create_report/', views.create_report, name='create_report'),
+    path('op_machine_assignment/', views.op_machine_assignment, name='op_machine_assignment'),
+    path('approval_sign_off/', views.approval_sign_off, name='approval_sign_off'),
+    path('final_reports/', views.final_reports, name='final_reports'),
+    path('patient_view_results/<anpac_id>', views.patient_view_results, name='patient_view_results'),
+    path('patient_cobas_results/<anpac_id>', views.patient_cobas_results, name='patient_cobas_results'),
+    path('patient_cda_results/<anpac_id>', views.patient_cda_results, name='patient_cda_results'),
+    path('approve_report_cda/<anpac_id>', views.approve_report_cda, name='approve_report_cda'),
+    path('approve_report_cobas/<anpac_id>', views.approve_report_cobas, name='approve_report_cobas'),
+    path('download_req_excel/', views.download_req_excel, name='download_req_excel'),
+    path('final_cobas_results/<anpac_id>', views.final_cobas_results, name='final_cobas_results'),
+    path('approved_cda_results/<anpac_id>', views.approved_cda_results, name='approved_cda_results'),
+    path('email_final_report/<anpac_id>', views.email_final_report, name='email_final_report'),
+     path('archive/', views.archive, name='archive'),
+    ]

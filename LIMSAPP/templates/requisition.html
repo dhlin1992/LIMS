@@ -1,0 +1,302 @@
+
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1>Patient Information</h1>
+<form class="row g-3" action method="POST" novalidate>
+  {% csrf_token %}
+    <div class="col-md-2">
+      <label class="form-label">Patient Last Name</label>
+      <input id="last_name" name="last_name" type="text" class="form-control" value="">
+    </div>
+    <div class="col-md-2">
+      <label class="form-label">First Name</label>
+      <input id="first_name" name="first_name" type="text" class="form-control" value="">
+    </div>
+    <div class="col-md-1">
+      <label class="form-label">Middle Initial</label>
+      <input id="middle_initial" name="middle_initial" type="text" class="form-control" value="">
+    </div>
+      <div class="col-md-2">
+      <label class="form-label">Patient ID</label>
+      <input id="patient_id" name="patient_id" type="text" class="form-control" placeholder="Required" value="">
+    </div>
+    <div class="col-md-2">
+      <label class="form-label">Sex</label>
+      <select class="form-select" id="sex" name="sex">
+        <option selected disabled value="">Select...</option>
+        <option>Male</option>
+        <option>Female</option>
+      </select>
+    </div>
+    <div class="col-md-2">
+      <label class="form-label">Date Of Birth</label>
+      <input id="dob" name="dob" type="text" class="form-control" placeholder="MM/DD/YYYY" value="{% now 'SHORT_DATE_FORMAT' %}">
+      <!--
+      <input type="date" id="start" name="trip-start"
+         value="2021-07-22"
+         min="2020-01-01" max="2018-12-31" class="form-control">
+       -->
+    </div>
+    <div class="col-md-3">
+      <label class="form-label">Patient Phone No.</label>
+      <input id="phone_no" name="phone_no" type="tel" name="telphone" placeholder="888 888 8888" pattern="[0-9]{3} [0-9]{3} [0-9]{4}" maxlength="12"  title="Ten digits code"  class="form-control"/>
+    </div>
+    <div class="col-md-3">
+      <label  class="form-label">Patient Email Address</label>
+      <input id="email_address" name="email_address" type="text" class="form-control" value="">
+    </div>
+    <div class="col-md-2">
+      <label class="form-label">Medical Record No. (MRN)</label>
+      <input id="mrn_no" name="mrn_no" type="text" class="form-control" value="">
+    </div>
+    <h2>Clinical History</h2>
+    <textarea rows="5" cols="80" id="patient_clinical_history" name="patient_clinical_history"></textarea>
+    <h1>Billing Information</h1>
+     <div class="col-md-6">
+       <label class="form-label">Billing Address</label>
+       <input id="billing_address" name="billing_address" type="text" class="form-control" value="">
+     </div>
+     <div class="col-md-3">
+       <label class="form-label">State</label>
+       <input id="billing_state" name="billing_state" type="text" class="form-control" value="">
+     </div>
+     <div class="col-md-3">
+       <label class="form-label">Zipcode</label>
+       <input id="billing_zipcode" name="billing_zipcode" type="text" class="form-control" value="">
+     </div>
+     <div class="col-md-2">
+       <label class="form-label">Bill To:</label>
+       <select class="form-select" id="bill_to" name="bill_to">
+         <option selected disabled value="">Select...</option>
+         <option>Client</option>
+         <option>Patient</option>
+         <option>Insurance</option>
+         <option>Medicare</option>
+         <option>Cash/Check</option>
+       </select>
+     </div>
+     <div class="col-md-3">
+       <label class="form-label">Insurance Company</label>
+       <input id="insurance_company" name="insurance_company" type="text" class="form-control" value="">
+     </div>
+     <div class="col-md-3">
+       <label class="form-label">Insurance Policy Subscriber Name</label>
+       <input id="ins_pol_sub_nam" name="ins_pol_sub_nam" type="text" class="form-control" value="">
+     </div>
+     <div class="col-md-4">
+       <label class="form-label">Patient Relationship To Insurance Policy Subscriber</label>
+       <input id="pat_rel_to_ins_pol_sub" name="pat_rel_to_ins_pol_sub" type="text" class="form-control" value="">
+     </div>
+     <div class="col-md-6">
+       <label class="form-label">Address</label>
+       <input id="pat_rel_address" name="pat_rel_address" type="text" class="form-control" value="">
+     </div>
+     <div class="col-md-3">
+       <label class="form-label">State</label>
+       <input id="pat_rel_state" name="pat_rel_state" type="text" class="form-control" value="">
+     </div>
+     <div class="col-md-3">
+       <label class="form-label">Zipcode</label>
+       <input id="pat_rel_zip" name="pat_rel_zip" type="text" class="form-control"value="">
+     </div>
+
+     <div class="col-md-2">
+       <label class="form-label">Subscriber No.</label>
+       <input id="subscriber_no" name="subscriber_no" type="text" class="form-control" value="">
+     </div>
+     <div class="col-md-2">
+       <label class="form-label">Group No.</label>
+       <input id="group_no" name="group_no" type="text" class="form-control" value="">
+     </div>
+     <div class="col-md-2">
+       <label class="form-label">Medicare No.</label>
+       <input id="medicare_no" name="medicare_no" type="text" class="form-control" value="">
+     </div>
+    <h1>Sample Information</h1>
+      <div class="col-md-2">
+        <label class="form-label">AnPac Bio ID</label>
+        <input id="anpac_id" name="anpac_id" type="text" class="form-control" placeholder="Required" value="" required>
+      </div>
+      <div class="col-md-2">
+        <label class="form-label">Client Name</label>
+        <input id="client_name" name="client_name" type="text" class="form-control" placeholder="Required" value="">
+      </div>
+      <div class="col-md-2">
+        <label class="form-label">Specimen ID</label>
+        <input id="sender_id" name="sender_id" type="text" class="form-control" placeholder="Required" value="">
+      </div>
+      <div class="col-md-2">
+        <label class="form-label">Ordering/Treating Physician</label>
+        <input id="or_physician" name="or_physician" type="text" class="form-control" value="">
+      </div>
+      <div class="col-md-3">
+        <label class="form-label">Ordering/Treating Physician Phone No.</label>
+        <input id="or_physician_no" name="or_physician_no" type="tel" name="telphone" placeholder="888 888 8888" pattern="[0-9]{3} [0-9]{3} [0-9]{4}" maxlength="12"  title="Ten digits code" class="form-control"/>
+      </div>
+      <div class="col-md-3">
+        <label class="form-label">Ordering/Treating Physician Email Address</label>
+        <input id="or_physician_email" name="or_physician_email" type="text" class="form-control" value="">
+      </div>
+      <div class="col-md-2">
+        <label class="form-label">Date Collected</label>
+        <input id="date_collected" name="date_collected" type="text" class="form-control" placeholder="MM/DD/YYYY" value="{% now 'SHORT_DATE_FORMAT' %}">
+        <!--
+        <input type="date" id="start" name="trip-start"
+           value="2021-07-22"
+           min="2018-01-01" max="2018-12-31" class="form-control">
+         -->
+      </div>
+      <div class="col-md-2">
+        <label class="form-label">Time Collected</label>
+        <input id="time_collected" name="time_collected" type="text" class="form-control" placeholder="H:MM a.m./p.m." value="{% now 'TIME_FORMAT' %}">
+        <!--
+        <input type="time" id="appt" name="appt"
+           min="09:00" max="18:00" class="form-control">
+         -->
+      </div>
+      <div class="col-md-3">
+        <label class="form-label">Collected By</label>
+        <input id="collected_by" name="collected_by" type="text" class="form-control" value="">
+      </div>
+      <div class="col-md-3">
+        <label class="form-label">Sample Type</label>
+        <input id="sample_type" name="sample_type" type="text" class="form-control" placeholder="Serum/Whole Blood" value="">
+      </div>
+      <div class="col-md-3">
+        <label class="form-label">Sample Volume (ml)</label>
+        <input id="vol_amount" name="vol_amount" type="text" class="form-control" value="">
+      </div>
+      <div class="col-md-3">
+        <label class="form-label">Storage Location</label>
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+          <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true">-80</button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="false">-20</button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contact" type="button" role="tab" aria-controls="contact" aria-selected="false">Fridge</button>
+          </li>
+        </ul>
+        
+        <div class="tab-content" id="myTabContent">
+          <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+            <!-- 1A, 1B, 1C, 1D, 1E -->
+              <select class="form-select" id="storage_location" name="storage_location">
+                <option selected disabled value="">Location Options</option>
+                <option>-80, 1A</option>
+                <option>-80, 1B</option>
+                <option>-80, 1C</option>
+                <option>-80, 1D</option>
+                <option>-80, 1E</option>
+              </select>
+          </div>
+          <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+            <!-- 2, 3, 4A, 5A -->
+            <select class="form-select" id="storage_location" name="storage_location">
+                <option selected disabled value="">Location Options</option>
+                <option>-20, 2</option>
+                <option>-20, 3</option>
+                <option>-20, 4A</option>
+                <option>-20, 5A</option>
+              </select>
+          </div>
+          <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
+            <!-- 4B, 5B -->
+            <select class="form-select" id="storage_location" name="storage_location">
+                <option selected disabled value="">Location Options</option>
+                <option>Fridge, 4B</option>
+                <option>Fridge, 5B</option>
+              </select>
+          </div>
+        </div>
+        <!--<input id="storage_location" name="storage_location" type="text" class="form-control" value="">-->
+      </div>
+     <h1>Individual Tests</h1>
+
+  	<table class="table table-info">
+    <thead>
+      <tr>
+        <th scope="row"></th>
+        <th scope="col">TEST</th>
+        <th scope="col">CPT</th>
+        <th scope="col">TUBE</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <th scope="row"><div class="form-check">
+        <input class="form-check-input" name="psa_choice" type="checkbox" id="psa_choice" value="psa_choice"/>
+      </th>
+        <td><label class="form-check-label" for="psa_choice">PSA, Total</label></td>
+        <td>84153</td>
+        <td>SST</td>
+      </tr>
+      <tr>
+        <th scope="row"><div class="form-check">
+        <input class="form-check-input" name="afp_choice" type="checkbox" id="afp_choice" value="afp_choice"/>
+      </th>
+        <td><label class="form-check-label" for="afp_choice">AFP</label></td>
+        <td></td>
+        <td></td>
+      </tr>
+      <tr>
+        <th scope="row"><div class="form-check">
+        <input class="form-check-input" name="ca125_choice" type="checkbox" id="ca125_choice" value="ca125_choice"/></th>
+        <td colspan="2"><label class="form-check-label" for="ca125_choice">CA125</label></td>
+        <td></td>
+      </tr>
+      <tr>
+        <th scope="row"><div class="form-check">
+        <input class="form-check-input" name="ca19_9_choice" type="checkbox" id="ca19_9_choice" value="ca19_9_choice"/></th>
+        <td colspan="2"><label class="form-check-label" for="ca19_9_choice">CA19-9</label></td>
+        <td></td>
+      </tr>
+      <tr>
+        <th scope="row"><div class="form-check">
+        <input class="form-check-input" name="cea_choice" type="checkbox" id="cea_choice" value="cea_choice"/></th>
+        <td colspan="2"><label class="form-check-label" for="cea_choice">CEA</label></td>
+        <td></td>
+      </tr>
+      <tr>
+        <th scope="row"><div class="form-check">
+        <input class="form-check-input" name="cda_assay" type="checkbox" id="cda_assay" value="cda_assay"/></th>
+        <td colspan="2"><label class="form-check-label" for="cda_assay">CDA Assay</label></td>
+        <td>EDTA</td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="col-md-3">
+      <label class="form-label">Information Submitted By:</label>
+      <input id="info_sub_by" name="info_sub_by" type="text" class="form-control" value="{{ user.first_name }} {{ user.last_name }}" readonly="">
+    </div>
+    <!--
+  <div class="col-12">
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" value="">
+        <label class="form-check-label">
+          All Information has been submitted correctly
+        </label>
+        <div class="invalid-feedback">
+          You must agree before submitting.
+        </div>
+      </div>
+    </div> -->
+    <div class="col-md-2">
+      <label class="form-label">Submitted at:</label>
+      <input id="req_date_created" name="req_date_created" type="text" class="form-control" value="{% now 'DATETIME_FORMAT' %}">
+    </div>
+     <div class="col-12">
+      <button class="btn btn-primary" type="submit">Submit Form</button>
+    </div>
+    </div>
+</form>
+<br><br><br><br><br><br><br>
+
+
+
+
+{% endblock %}

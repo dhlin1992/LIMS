@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% if messages %}
+	{% for message in messages %}
+	    <div class="alert alert-danger" role="alert">
+	  {{ message }}
+	</div>
+	{% endfor %}
+{% endif %}
+<h1>Import Requisition Excel</h1>
+<form action="" method="POST" enctype="multipart/form-data" class="form-horizontal">
+	{% csrf_token %}
+	<div class="form-group">
+		<label for="name" >Approve All Incoming Requisitions: </label>
+		<input class="form-check-input" name="excel_qc_approved" type="checkbox" id="excel_qc_approved" value="approve_all"/>
+		<div>
+			<br>
+		<div class="col-md-3">
+		  <label class="form-label">Storage Location (Select when storing)</label>
+		  <ul class="nav nav-tabs" id="myTab" role="tablist">
+		    <li class="nav-item" role="presentation">
+		      <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true">-80</button>
+		    </li>
+		    <li class="nav-item" role="presentation">
+		      <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="false">-20</button>
+		    </li>
+		    <li class="nav-item" role="presentation">
+		      <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contact" type="button" role="tab" aria-controls="contact" aria-selected="false">Fridge</button>
+		    </li>
+		  </ul>
+		  
+		  <div class="tab-content" id="myTabContent">
+		    <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+		      <!-- 1A, 1B, 1C, 1D, 1E -->
+		        <select class="form-select" id="storage_location" name="storage_location">
+		          <option selected disabled value="">Location Options</option>
+		          <option>-80, 1A</option>
+		          <option>-80, 1B</option>
+		          <option>-80, 1C</option>
+		          <option>-80, 1D</option>
+		          <option>-80, 1E</option>
+		        </select>
+		    </div>
+		    <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+		      <!-- 2, 3, 4A, 5A -->
+		      <select class="form-select" id="storage_location" name="storage_location">
+		          <option selected disabled value="">Location Options</option>
+		          <option>-20, 2</option>
+		          <option>-20, 3</option>
+		          <option>-20, 4A</option>
+		          <option>-20, 5A</option>
+		        </select>
+		    </div>
+		    <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
+		      <!-- 4B, 5B -->
+		      <select class="form-select" id="storage_location" name="storage_location">
+		          <option selected disabled value="">Location Options</option>
+		          <option>Fridge, 4B</option>
+		          <option>Fridge, 5B</option>
+		        </select>
+		    </div>
+		  </div>
+		  <!--<input id="storage_location" name="storage_location" type="text" class="form-control" value="">-->
+		</div>
+		<br>
+		<input type="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" name="import_req_excel" id="import_req_excel" required="True" class="form-control">
+		<br>
+		<button class="btn btn-primary" type="submit">Upload Requisition Excel</button>
+		</div>
+		<br>
+	</div>
+	<br>
+	<div class="form-group">
+		<h1>Download Requisition Excel Sheet</h1>
+		<br>
+		<a class="btn btn-primary" href="{% url 'download_req_excel' %}">Download</a>
+	</div>
+</form>
+
+
+
+{% endblock %}

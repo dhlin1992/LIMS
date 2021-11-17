@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% load static %}
+{% if messages %}
+  {% for message in messages %}
+      <div class="alert alert-success" role="alert">
+    {{ message }}
+  </div>
+  {% endfor %}
+{% endif %}
+<div class="jumbotron">
+
+  <h1 class="display-4">Welcome {% if user.is_authenticated %} {{user.first_name}} {% endif %}!</h1>
+  <p class="lead">AnPac Bio | LIMS</p>
+  <hr class="my-4">
+
+<br>
+<div>
+  <a class="btn btn-primary btn-lg" href="https://www.anpacbio.com/" role="button">Learn more about AnPac Bio!</a>
+</div>
+
+<br><br><br>
+{% if user.is_authenticated %}
+  <div class="row">
+  <div class="col-sm-6">
+    <div class="card w-75">
+      <div class="card-body">
+        <h5 class="card-title">New Requisition Form</h5>
+        <p class="card-text">Create a new Requsition Form</p>
+        <a href="{% url 'requisition_form' %}" class="btn btn-primary">Create</a>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6">
+    <div class="card w-75">
+      <div class="card-body">
+        <h5 class="card-title">Search/Edit/QC</h5>
+        <p class="card-text">Search, Edit and Approve Requisitions</p>
+        <a href="{% url 'search_req' %}" class="btn btn-primary">Search</a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}
+
+<br><br>
+
+<div class="card" style="width: 18rem;">
+  <img src="{% static '/images/cheesing.jpg' %}">
+  <div class="card-body">
+    <h5 class="card-title">Alpha Product</h5>
+    <p class="card-text">Developed by Dennis Lin</p>
+    <a href="https://www.linkedin.com/in/dennis-lin-694371b7/" class="btn btn-primary">Linkedin</a>
+  </div>
+</div>
+
+
+<br><br><br><br><br>
+
+{% endblock %}

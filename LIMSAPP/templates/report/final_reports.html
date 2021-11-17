@@ -1,0 +1,156 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1>Final Reports</h1>
+  <hr>
+	<div class="row g-3">
+      <nav>
+        <div class="nav nav-tabs" id="nav-tab" role="tablist">
+          <button class="nav-link active" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-home" aria-selected="true">Cancer Diagnostic Assay (CDA)</button>
+          <button class="nav-link" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-profile" type="button" role="tab" aria-controls="nav-profile" aria-selected="false">Cobas E411</button>
+        </div>
+      </nav>
+      <div class="tab-content" id="nav-tabContent">
+        <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+          <!-- CDA Batch ID's Accordian-->
+          {% if all_batch %}
+            {% for batch in all_batch %}
+              {% if batch.batch_type == 'CDA' and batch.batch_status == 'Complete' %}
+          <div class="accordion accordion" id="accordionFlushExample">
+            <form class="row g-3" action method="POST" novalidate>
+              {% csrf_token %}
+            <div class="accordion-item">
+              <h2 class="accordion-header" id="flush-headingOne">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#{{batch.batch_id}}" aria-expanded="false" aria-controls="{{batch.batch_id}}">
+                  {{batch.batch_id}}
+                </button>
+              </h2>
+              <div id="{{batch.batch_id}}" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
+                <div class="accordion-body">
+                  <!-- Display CDA Requisition within Batch below -->
+                      <table class="table text-right">
+                    <thead>
+                      <tr>
+                        <th scope="col">Req. Create Date</th>
+                        <th scope="col">AnPac Bio ID</th>
+                        <th scope="col">Collection Date</th>
+                        <th scope="col">Client</th>
+                        <th scope="col">Storage Location</th>
+                        <th scope="col">Operator</th>
+                        <th scope="col">CDA Model</th>
+                        <th></th>
+                        <th></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% if all_patients %}
+                        {% for things in all_patients %}
+                          {% if things.req_status == 'Approved' and things.batch_id_cda == batch.batch_id %}
+                            {% if things.cda_status == 'ResultsApproved' %}
+                            <tr>
+                              <td>{{things.req_date_created}}</td>
+                              <td>{{things.anpac_id}}</td>
+                              <td>{{things.date_collected}}</td>
+                              <td>{{things.client_name}}</td>
+                              <td>{{things.storage_location}}</td>
+                              <td>{{things.cda_test_operator}}</td>
+                              <td>{{things.cda_model_assigned}}</td>
+                              <td>
+                              	<a class="btn btn-primary" href="{% url 'approved_cda_results' things.anpac_id%}" target="_blank">View</a>
+                              </td>
+                              <td>
+                              	<a class="btn btn-success" href="{% url 'email_final_report' things.anpac_id %}" target="_blank">Email</a>
+                              </td>
+                            </tr>
+                            {% endif %}
+                          {% endif %}
+                        {% endfor %}
+                      {% endif %}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </form>
+          </div>
+              {% endif %}
+            {% endfor %}
+          {% endif %}
+        </div>
+        <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+          <!--Cobas Batch ID's Accordian-->
+          {% if all_batch %}
+                      {% for batch in all_batch %}
+                        {% if batch.batch_type == 'COBAS' and batch.batch_status == 'Complete'%}
+                    <div class="accordion accordion" id="accordionFlushExample">
+                      <form class="row g-3" action method="POST" novalidate>
+                        {% csrf_token %}
+                      <div class="accordion-item">
+                        <h2 class="accordion-header" id="flush-headingOne">
+                          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#{{batch.batch_id}}" aria-expanded="false" aria-controls="{{batch.batch_id}}">
+                            {{batch.batch_id}}
+                          </button>
+                        </h2>
+                        <div id="{{batch.batch_id}}" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
+                          <div class="accordion-body">
+                            <!-- Display Cobas Requisition within Batch below -->
+                                <table class="table text-right">
+                              <thead>
+                                <tr>
+                                  <th scope="col">Req. Create Date</th>
+                                  <th scope="col">AnPac Bio ID</th>
+                                  <th scope="col">Collection Date</th>
+                                  <th scope="col">Client</th>
+                                  <th scope="col">Storage Location</th>
+                                  <th scope="col">Operator</th>
+                                  <th scope="col">Cobas Model</th>
+                                  <th scope="col">Biomarkers</th>
+                                  <th></th>
+                                  <th></th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {% if all_patients %}
+                                  {% for things in all_patients %}
+                                    {% if things.req_status == 'Approved' and things.batch_id_cobas == batch.batch_id %}
+                                      {% if things.cobas_status == 'ResultsApproved' %}
+                                      <tr>
+                                        <td>{{things.req_date_created}}</td>
+                                        <td>{{things.anpac_id}}</td>
+                                        <td>{{things.date_collected}}</td>
+                                        <td>{{things.client_name}}</td>
+                                        <td>{{things.storage_location}}</td>
+                                        <td>{{things.cobas_test_operator}}</td>
+                                        <td>{{things.cobas_model_assigned}}</td>
+                                          {% if things.psa_choice or things.afp_choice or things.ca125_choice or things.ca19_9_choice or things.cea_choice %}
+                                            <td scope="col"> 
+                                            {% if things.cobas_status == 'ResultsApproved' and things.batch_id_cobas %}
+                                            {% if things.psa_status == 'ReportReady' %} (PSA, Total) {% endif %} {% if things.afp_status == 'ReportReady' %} (AFP) {% endif %} {% if things.ca125_status == 'ReportReady' %} (CA125) {% endif %} {% if things.ca19_9_status == 'ReportReady' %} (CA19-9) {% endif %} {% if things.cea_status == 'ReportReady' %} (CEA) {% endif %}{% endif %}</td>
+                                            <td>
+                                            	<a class="btn btn-primary" href="{% url 'final_cobas_results' things.anpac_id %}" target="_blank">View</a>
+                                            </td>
+                                            <td>
+                                            	<a class="btn btn-success" href="{% url 'email_final_report' things.anpac_id %}" target="_blank">Email</a>
+                                            </td>
+                                          {% endif %}
+                                      </tr>
+                                      {% endif %}
+                                    {% endif %}
+                                  {% endfor %}
+                                {% endif %}
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      </div>
+                    </form>
+                    </div>
+                        {% endif %}
+                      {% endfor %}
+                    {% endif %}
+        </div>
+      </div>
+</div>
+
+{% endblock %}

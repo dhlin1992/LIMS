@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+
+{% block content %}
+	{% if result_patient %}
+		<h1>{{result_patient.0.anpac_id}}</h1>
+		<hr>
+		<br>
+		<form class="row g-3" method='POST'>
+			{% csrf_token %}
+		{% if result_patient.0.cda_status == 'ReportReady' %}
+			<h3><label>CDA Assay: &nbsp;</label><input type="form-control" name="cda_score" id="cda_score" value="{{result_patient.0.cda_score}}"></h3>
+			CDA External Comments:
+			<textarea rows="5" cols="80" id="cda_test_notes" name="cda_test_notes">{{ result_patient.0.cda_test_notes }}</textarea>
+			<br>
+			CDA Internal Comments:
+			<textarea rows="5" cols="80" id="cda_internal_notes" name="cda_internal_notes">{{ result_patient.0.cda_internal_notes }}</textarea>
+		<br>
+		<div class="col-12">
+		  <button class="btn btn-primary" type="submit">Submit</button>
+		</div>
+		<hr>
+		<br>
+		{% endif %}
+		{% if result_patient.0.cobas_status == 'ReportReady' %}
+		<h3>Cobas E411 Assays</h3>
+			<table class="table text-right">
+		   <thead>
+		     <tr>
+		       <th scope="col">PSA</th>
+		       <th scope="col">AFP</th>
+		       <th scope="col">CA125</th>
+		       <th scope="col">CA19-9</th>
+		       <th scope="col">CEA</th>
+		     </tr>
+		 	</thead>
+		 	<tr>
+		 		{% if result_patient.0.psa_choice == True %}
+		 			<td><input type="form-control" name="psa_score" id="psa_score" value="{{result_patient.0.psa_score}}"></td>
+		 		{% else %}
+		 			<td>Not Selected in Requsition</td>
+		 		{% endif %}
+		 		{% if result_patient.0.afp_choice == True %}
+		 			<td><input type="form-control" name="afp_score" id="afp_score" value="{{result_patient.0.afp_score}}"></td>
+		 		{% else %}
+		 			<td>Not Selected in Requsition</td>
+		 		{% endif %}
+		 		{% if result_patient.0.ca125_choice == True %}
+		 			<td><input type="form-control" name="ca125_score" id="ca125_score" value="{{result_patient.0.ca125_score}}"></td>
+		 		{% else %}
+		 			<td>Not Selected in Requsition</td>
+		 		{% endif %}
+		 		{% if result_patient.0.ca19_9_choice == True %}
+		 			<td><input type="form-control" name="ca19_9_score" id="ca19_9_score" value="{{result_patient.0.ca19_9_score}}"></td>
+		 		{% else %}
+		 			<td>Not Selected in Requsition</td>
+		 		{% endif %}
+		 		{% if result_patient.0.cea_choice == True %}
+		 			<td><input type="form-control" name="cea_score" id="cea_score" value="{{result_patient.0.cea_score}}"></td>
+		 		{% else %}
+		 			<td>Not Selected in Requsition</td>
+		 		{% endif %}
+		 	</tr>
+		 </table>
+		 Cobas External Comments
+		 <textarea rows="5" cols="80" id="cobas_test_notes" name="cobas_test_notes">{{ result_patient.0.cobas_test_notes }}</textarea>
+		 <br>
+		 Cobas Internal Comments
+		 <textarea rows="5" cols="80" id="cobas_internal_notes" name="cobas_internal_notes">{{ result_patient.0.cobas_internal_notes }}</textarea>
+		 <div class="col-12">
+		   <button class="btn btn-primary" type="submit">Submit</button>
+		 </div>
+		</form>
+		{% endif %}
+	{% endif %}
+{% endblock %}

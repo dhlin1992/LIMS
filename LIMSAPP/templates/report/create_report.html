@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1>Amend/View Reports</h1>
+<hr>
+
+<ul class="nav nav-tabs" id="myTab" role="tablist">
+  <li class="nav-item" role="presentation">
+    <button class="nav-link active" id="cda-tab" data-bs-toggle="tab" data-bs-target="#cda" type="button" role="tab" aria-controls="cda" aria-selected="true">Cancer Diagnostic Assay (CDA)</button>
+  </li>
+  <li class="nav-item" role="presentation">
+    <button class="nav-link" id="cobas-tab" data-bs-toggle="tab" data-bs-target="#cobas" type="button" role="tab" aria-controls="cobas" aria-selected="false">Cobas E411</button>
+  </li>
+</ul>
+<div class="tab-content" id="myTabContent">
+  <div class="tab-pane fade show active" id="cda" role="tabpanel" aria-labelledby="cda-tab">
+    <!--CDA Requisitions that are complete-->
+    <div class="accordion" id="accordionExample">
+      {% if all_patients %}
+      {% for things in all_patients %}
+        {% if things.cda_status == 'ReportReady' %}
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="heading{{things.anpac_id}}">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#{{things.anpac_id}}" aria-expanded="false" aria-controls="collapseTwo">
+            {{things.anpac_id}}&nbsp&nbsp&nbsp Batch ID: {{things.batch_id_cda}}
+          </button>
+        </h2>
+        <div id="{{things.anpac_id}}" class="accordion-collapse collapse" aria-labelledby="heading{{things.anpac_id}}" data-bs-parent="#accordionExample">
+          <div class="accordion-body">
+            <!-- Requisition Information -->
+            <a class="btn btn-success" href="{% url 'patient_view_results' things.anpac_id %}" target="_blank">Amend</a>
+            <a class="btn btn-primary" href="{% url 'patient_cda_results' things.anpac_id %}" target="_blank">View Pending Report</a>
+          </div>
+        </div>
+      </div>
+      {% endif %}
+      {% endfor %}
+    {% endif %}
+    </div>
+  </div>
+  <div class="tab-pane fade" id="cobas" role="tabpanel" aria-labelledby="cobas-tab">
+    <!-- Cobas E411 Requisitions that are complete-->
+      <div class="accordion" id="accordionExample">
+            {% if all_patients %}
+            {% for things in all_patients %}
+              {% if things.cobas_status == 'ReportReady' %}
+            <div class="accordion-item">
+              <h2 class="accordion-header" id="headingT{{things.anpac_id}}">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#{{things.anpac_id}}" aria-expanded="false" aria-controls="collapseThree">
+                  {{things.anpac_id}}
+                </button>
+              </h2>
+              <div id="{{things.anpac_id}}" class="accordion-collapse collapse" aria-labelledby="headingT{{things.anpac_id}}" data-bs-parent="#accordionExample">
+                <div class="accordion-body">
+                  <!-- Requisition Information -->
+                  <a class="btn btn-success" href="{% url 'patient_view_results' things.anpac_id %}" target="_blank">Amend</a>
+                  <a class="btn btn-primary" href="{% url 'patient_cobas_results' things.anpac_id %}" target="_blank">View Pending Report</a>
+                </div>
+              </div>
+            </div>
+            {% endif %}
+            {% endfor %}
+          {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+ <!--<form class="d-flex" method='POST'>
+ 	<table class="table text-right">
+    <thead>
+      <tr>
+        <th scope="col">AnPac Bio ID</th>
+        <th scope="col">CDA Score</th>
+        <th scope="col">Report (CDA)</th>
+        <th scope="col">PSA</th>
+        <th scope="col">AFP</th>
+        <th scope="col">CA125</th>
+        <th scope="col">CA19-9</th>
+        <th scope="col">CEA</th>
+        <th scope="col">Report (Cobas)</th>
+      </tr>
+  	</thead>
+  	<tbody>
+  	{% if all_patients %}
+  	  {% for things in all_patients %}
+  	    {% if things.cda_status == 'ReportReady' or things.cobas_status == 'ReportReady' %}
+  	      <tr>
+  	    <th scope="row"><a href="{% url 'patient_view_results' things.anpac_id %}" >{{ things.anpac_id }}</th>
+  	    <td>{{things.cda_score}}</td>
+  	    <td><a href="{% url 'patient_cda_results' things.anpac_id %}" target="_blank">View</td>
+  	    <td>{{things.psa_score}}</td>
+  	    <td>{{things.afp_score}}</td>
+  	    <td>{{things.ca125_score}}</td>
+  	    <td>{{things.ca19_9_score}}</td>
+  	    <td>{{things.cea_score}}</td>
+  	    <td><a href="{% url 'patient_cobas_results' things.anpac_id %}" target="_blank">View</td>
+  	  </tr>
+  	    {% endif %}
+  	  {% endfor %}
+  	{% endif %}
+  	</tbody>
+	</table>
+ </form>-->
+
+{% endblock %}

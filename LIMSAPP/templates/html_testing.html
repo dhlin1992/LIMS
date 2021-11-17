@@ -1,0 +1,239 @@
+{% extends 'base.html' %}
+
+<!--
+This page needs to have patient_info and choices inserted before rendering
+	-->
+
+{% block content %}
+<h1>Patient Information</h1>
+<form class="row g-3" action method="POST" novalidate>
+	{% csrf_token %}
+		{% if patient_info %}
+			<div class="col-md-2">
+				<label class="form-label">Requisition Create Date</label>
+				<input class="form-control" type="text" id="req_date_created" name="req_date_created" value="{{patient_info.0.req_date_created}}" readonly>
+			</div>
+			<div class="col-md-2">
+				<label class="form-label">Last updated</label>
+				<input class="form-control" type="text" id="" name="" value="{{patient_info.0.updated_at}}" readonly="">
+			</div>
+			<div class="col-md-2">
+				<label class="form-label">Sender/Hospital ID</label>
+				<input class="form-control"type="text" name="sender_id" id="sender_id" value="{{patient_info.0.sender_id}}">
+			</div>
+			<div class="col-md-2">
+				<label class="form-label">Patient Last Name</label>
+				<input id="last_name" name="last_name" type="text" class="form-control" value="{{patient_info.0.last_name}}">
+			</div>
+			<div class="col-md-2">
+				<label class="form-label">First Name</label>
+				<input class="form-control"type="text" name="first_name" id="first_name" value="{{patient_info.0.first_name}}">
+			</div>
+			<div class="col-md-1">
+				<label class="form-label">Middle Initial</label>
+				<input class="form-control" type="text" id="middle_initial" name="middle_initial" value="{{patient_info.0.middle_initial}}">
+			</div>
+			<div class="col-md-2">
+				<label class="form-label">Sex</label>
+				<input class="form-control" type="text" id="sex" name="sex" value="{{patient_info.0.sex}}">
+			</div>
+			<div class="col-md-2">
+				<label class="form-label">Date of Birth</label>
+				<input class="form-control" type="text" id="dob" name="dob" value="{{patient_info.0.dob}}">
+			</div>
+			<div class="col-md-2">
+				<label class="form-label">Patient Phone No.</label>
+				<input class="form-control" type="text" id="phone_no" name="phone_no" value="{{patient_info.0.phone_no}}">
+			</div>
+			<div class="col-md-2">
+				<label class="form-label">Patient ID No.</label>
+				<input class="form-control" type="text" id="anpac_id" name="anpac_id" value="{{patient_info.0.anpac_id}}">
+			</div>
+			<div class="col-md-3">
+				<label class="form-label">Patient Email Address</label>
+				<input class="form-control" type="text" id="email_address" name="email_address" value="{{patient_info.0.email_address}}">
+			</div>
+			<div class="col-md-2">
+				<label class="form-label">Medicare No.</label>
+				<input class="form-control" type="text" id="medicare_no" name="medicare_no" value="{{patient_info.0.medicare_no}}">
+			</div>
+			<div class="col-md-2">
+				<label class="form-label">Physician Name</label>
+				<input class="form-control" type="text" id="or_physician" name="or_physician" value="{{patient_info.0.or_physician}}">
+			</div>
+			<div class="col-md-2">
+				<label class="form-label">Physician Phone No.</label>
+				<input class="form-control" type="text" id="or_physician_no" name="or_physician_no" value="{{patient_info.0.or_physician_no}}">
+			</div>
+			<div class="col-md-3">
+				<label class="form-label">Physician Email Adress</label>
+				<input class="form-control" type="text" id="or_physician_email" name="or_physician_email" value="{{patient_info.0.or_physician_email}}">
+			</div>
+			<div class="col-md-2">
+				<label class="form-label">Date Collected</label>
+				<input class="form-control" type="text" id="date_collected" name="date_collected" value="{{patient_info.0.date_collected}}">
+			</div>
+			<div class="col-md-2">
+				<label class="form-label">Time Collected</label>
+				<input class="form-control" type="text" id="time_collected" name="time_collected" value="{{patient_info.0.time_collected}}">
+			</div>
+			<div class="col-md-2">
+				<label class="form-label">Collected By</label>
+				<input class="form-control" type="text" id="collected_by" name="collected_by" value="{{patient_info.0.collected_by}}">
+			</div>
+			<h1>Billing Information</h1>
+			<div class="col-md-3">
+				<label class="form-label">Billing Address</label>
+				<input class="form-control" type="text" id="billing_address" name="billing_address" value="{{patient_info.0.billing_address}}">
+			</div>
+			<div class="col-md-2">
+				<label class="form-label">Billing State</label>
+				<input class="form-control" type="text" id="billing_state" name="billing_state" value="{{patient_info.0.billing_state}}">
+			</div>
+			<div class="col-md-2">
+				<label class="form-label">Zipcode</label>
+				<input class="form-control" type="text" id="billing_zipcode" name="billing_zipcode" value="{{patient_info.0.billing_zipcode}}">
+			</div>
+			<div class="col-md-2">
+				<label class="form-label">Bill To:</label>
+				<input class="form-control" type="text" id="bill_to" name="bill_to" value="{{patient_info.0.bill_to}}">
+			</div>
+			<div class="col-md-3">
+				<label class="form-label">Insurance Company</label>
+				<input class="form-control" type="text" id="insurance_company" name="insurance_company" value="{{patient_info.0.insurance_company}}">
+			</div>
+			<div class="col-md-3">
+				<label class="form-label">Insurance Policy Subscriber Name</label>
+				<input class="form-control" type="text" id="ins_pol_sub_nam" name="ins_pol_sub_nam" value="{{patient_info.0.ins_pol_sub_nam}}">
+			</div>
+			<div class="col-md-3">
+				<label class="form-label">Patient Relationship to Insurance</label>
+				<input class="form-control" type="text" id="pat_rel_to_ins_pol_sub" name="pat_rel_to_ins_pol_sub" value="{{patient_info.0.pat_rel_to_ins_pol_sub}}">
+			</div>
+			<div class="col-md-3">
+				<label class="form-label">Address</label>
+				<input class="form-control" type="text" id="pat_rel_address" name="pat_rel_address" value="{{patient_info.0.pat_rel_address}}">
+			</div>
+			<div class="col-md-3">
+				<label class="form-label">State</label>
+				<input class="form-control" type="text" id="pat_rel_state" name="pat_rel_state" value="{{patient_info.0.pat_rel_state}}">
+			</div>
+			<div class="col-md-2">
+				<label class="form-label">ZipCode</label>
+				<input class="form-control" type="text" id="pat_rel_zip" name="pat_rel_zip" value="{{patient_info.0.pat_rel_zip}}">
+			</div>
+			<div class="col-md-2">
+				<label class="form-label">Subscriber No.</label>
+				<input class="form-control" type="text" id="subscriber_no" name="subscriber_no" value="{{patient_info.0.subscriber_no}}">
+			</div>
+			<div class="col-md-2">
+				<label class="form-label">Group No.</label>
+				<input class="form-control" type="text" id="group_no" name="group_no" value="{{patient_info.0.group_no}}">
+			</div>
+			<h1>Individual Tests</h1>
+			<table class="table table-info">
+				<thread>
+					<tr>
+						<th scope="row"></th>
+						<th scope="col">TEST</th>
+						<th scope="col">CPT</th>
+						<th scope="col">TUBE</th>
+					</tr>
+				</thread>
+				<tbody>
+					<tr>
+						<th scope="row">
+							<div class="form-check">
+								<input class="form-check-input" type="checkbox" name="psa_choice" id="psa_choice" value="" {{choices.psa_choice}}>
+							</div>
+						</th>
+						<td>
+							<label class="form-check-label" for="psa_choice">PSA, Total</label>
+						</td>
+						<td>84153</td>
+						<td>SST</td>
+					</tr>
+					<tr>
+						<th scope="row">
+							<div class="form-check">
+								<input class="form-check-input" type="checkbox" name="afp_choice" id="afp_choice" value="" {{choices.afp_choice}}>
+							</div>
+						</th>
+						<td><label class="form-check-label" for="afp_choice">AFP</label></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<th scope="row">
+							<div class="form-check">
+								<input class="form-check-input" type="checkbox" name="ca125_choice" id="ca125_choice" value="" {{choices.ca125_choice}}>
+							</div>
+						</th>
+						<td>
+							<label class="form-check-label" for="psa_choice">CA125</label>
+						</td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<th scope="row">
+							<div class="form-check">
+								<input class="form-check-input" type="checkbox" name="ca19_9_choice" id="ca19_9_choice" value="" {{choices.ca19_9_choice}}>
+							</div>
+						</th>
+						<td>
+							<label class="form-check-label" for="psa_choice">CA19-9</label>
+						</td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<th scope="row">
+							<div class="form-check">
+								<input class="form-check-input" type="checkbox" name="cea_choice" id="cea_choice" value="" {{choices.cea_choice}}>
+							</div>
+						</th>
+						<td>
+							<label class="form-check-label" for="psa_choice">CEA</label>
+						</td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<th scope="row">
+							<div class="form-check">
+								<input class="form-check-input" type="checkbox" name="cda_assay" id="cda_assay" value="" {{choices.cda_assay}}>
+							</div>
+						</th>
+						<td>
+							<label class="form-check-label" for="psa_choice">CDA Assay</label>
+						</td>
+						<td></td>
+						<td>EDTA</td>
+					</tr>
+				</tbody>
+			</table>
+			<div class="col-md-2">
+				<label class="form-label">Information Submitted By</label>
+				<input class="form-control" type="text" id="info_sub_by" name="info_sub_by" value="{{patient_info.0.info_sub_by}}" readonly="">
+			</div>
+			<textarea rows="5" cols="80" id="edited_notes" name="edited_notes">{{ patient_info.0.edited_notes }}</textarea>
+			<div class="col-md-2">
+				<label class="form-label">Information Approved at</label>
+				<input class="form-control" type="text" id="updated_at" name="updated_at" value="{% now 'DATETIME_FORMAT' %}" readonly="">
+			</div>
+			<div class="col-md-2">
+				<label class="form-label">Information Approved By</label>
+				<input class="form-control" type="text" id="info_qc_by" name="info_qc_by" value="{{patient_info.0.info_qc_by}}">
+			</div>
+			<!--
+				TODO: Need to add checkbox to confirm before pressing approval button will do later
+			-->
+			<div class="col-12">
+				<button class="btn btn-primary" type="submit">Submit Approval</button>
+			</div>
+			<br><br><br>
+		{% endif %}	
+	</form>
+
+{% endblock %}

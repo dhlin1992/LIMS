@@ -1,0 +1,184 @@
+{% extends 'base.html' %}
+
+{% block content %}
+	<h1 class="text-center">Assays</h1>
+  <hr>
+	<form class="row g-3" action method="POST" novalidate>
+ 	  {% csrf_token %}
+    <h2>PSA, Total</h2>
+      <table class="table text-center">
+    <thead>
+      <tr>
+        <th scope="col">AnPac Bio ID</th>
+        <th scope="col">Status</th>
+        <th scope="col">Waiting</th>
+        <th scope="col">Inprogress</th>
+        <th scope="col">Complete</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% if all_patients %}
+        {% for things in all_patients %}
+          {% if things.status == 'Approved' %}
+            <tr>
+              {% if things.psa_choice == True %}
+              <td>{{things.anpac_id}}</td>
+              <td>{{things.psa_status}}</td>
+              <td><a class="btn btn-warning" href="{% url 'psa_assay_status_update' 'Waiting' things.anpac_id %}" value="Waiting" type="submit"></a></td>
+              <td><a class="btn btn-primary" href="{% url 'psa_assay_status_update' 'Inprogress' things.anpac_id %}" value="Inprogress"></a></td>
+              <td><a class="btn btn-success" href="{% url 'psa_assay_status_update' 'Complete' things.anpac_id %}" value="Complete"></td>
+              {% endif%}
+            </tr>
+          {% endif %}
+        {% endfor %}
+      {% endif %}
+    </tbody>
+  </table>
+  <h2>AFP</h2>
+      <table class="table text-center">
+    <thead>
+      <tr>
+        <th scope="col">AnPac Bio ID</th>
+        <th scope="col">Status</th>
+        <th scope="col">Waiting</th>
+        <th scope="col">Inprogress</th>
+        <th scope="col">Complete</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% if all_patients %}
+        {% for things in all_patients %}
+          {% if things.status == 'Approved' %}
+            <tr>
+              {% if things.afp_choice == True %}
+              <td>{{things.anpac_id}}</td>
+              <td>{{things.afp_status}}</td>
+              <td><a class="btn btn-warning" href="{% url 'afp_assay_status_update' 'Waiting' things.anpac_id %}" value="Waiting" type="submit"></a></td>
+              <td><a class="btn btn-primary" href="{% url 'afp_assay_status_update' 'Inprogress' things.anpac_id %}" value="Inprogress"></a></td>
+              <td><a class="btn btn-success" href="{% url 'afp_assay_status_update' 'Complete' things.anpac_id %}" value="Complete"></td>
+              {% endif%}
+            </tr>
+          {% endif %}
+        {% endfor %}
+      {% endif %}
+    </tbody>
+  </table>
+  <h2>CA125</h2>
+      <table class="table text-center">
+    <thead>
+      <tr>
+        <th scope="col">AnPac Bio ID</th>
+        <th scope="col">Status</th>
+        <th scope="col">Waiting</th>
+        <th scope="col">Inprogress</th>
+        <th scope="col">Complete</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% if all_patients %}
+        {% for things in all_patients %}
+          {% if things.status == 'Approved' %}
+            <tr>
+              {% if things.ca125_choice == True %}
+              <td>{{things.anpac_id}}</td>
+              <td>{{things.ca125_status}}</td>
+              <td><a class="btn btn-warning" href="{% url 'ca125_assay_status_update' 'Waiting' things.anpac_id %}" value="Waiting" type="submit"></a></td>
+              <td><a class="btn btn-primary" href="{% url 'ca125_assay_status_update' 'Inprogress' things.anpac_id %}" value="Inprogress"></a></td>
+              <td><a class="btn btn-success" href="{% url 'ca125_assay_status_update' 'Complete' things.anpac_id %}" value="Complete"></td>
+              {% endif%}
+            </tr>
+          {% endif %}
+        {% endfor %}
+      {% endif %}
+    </tbody>
+  </table>
+  <h2>CA19-9</h2>
+      <table class="table text-center">
+    <thead>
+      <tr>
+        <th scope="col">AnPac Bio ID</th>
+        <th scope="col">Status</th>
+        <th scope="col">Waiting</th>
+        <th scope="col">Inprogress</th>
+        <th scope="col">Complete</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% if all_patients %}
+        {% for things in all_patients %}
+          {% if things.status == 'Approved' %}
+            <tr>
+              {% if things.ca19_9_choice == True %}
+              <td>{{things.anpac_id}}</td>
+              <td>{{things.ca19_9_status}}</td>
+              <td><a class="btn btn-warning" href="{% url 'ca19_9_assay_status_update' 'Waiting' things.anpac_id %}" value="Waiting" type="submit"></a></td>
+              <td><a class="btn btn-primary" href="{% url 'ca19_9_assay_status_update' 'Inprogress' things.anpac_id %}" value="Inprogress"></a></td>
+              <td><a class="btn btn-success" href="{% url 'ca19_9_assay_status_update' 'Complete' things.anpac_id %}" value="Complete"></td>
+              {% endif%}
+            </tr>
+          {% endif %}
+        {% endfor %}
+      {% endif %}
+    </tbody>
+  </table>
+  <h2>CEA</h2>
+      <table class="table text-center">
+    <thead>
+      <tr>
+        <th scope="col">AnPac Bio ID</th>
+        <th scope="col">Status</th>
+        <th scope="col">Waiting</th>
+        <th scope="col">Inprogress</th>
+        <th scope="col">Complete</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% if all_patients %}
+        {% for things in all_patients %}
+          {% if things.status == 'Approved' %}
+            <tr>
+              {% if things.cea_choice == True %}
+              <td>{{things.anpac_id}}</td>
+              <td>{{things.cea_status}}</td>
+              <td><a class="btn btn-warning" href="{% url 'cea_assay_status_update' 'Waiting' things.anpac_id %}" value="Waiting" type="submit"></a></td>
+              <td><a class="btn btn-primary" href="{% url 'cea_assay_status_update' 'Inprogress' things.anpac_id %}" value="Inprogress"></a></td>
+              <td><a class="btn btn-success" href="{% url 'cea_assay_status_update' 'Complete' things.anpac_id %}" value="Complete"></td>
+              {% endif%}
+            </tr>
+          {% endif %}
+        {% endfor %}
+      {% endif %}
+    </tbody>
+  </table>
+  <h2>CDA</h2>
+      <table class="table text-center">
+    <thead>
+      <tr>
+        <th scope="col">AnPac Bio ID</th>
+        <th scope="col">Status</th>
+        <th scope="col">Waiting</th>
+        <th scope="col">Inprogress</th>
+        <th scope="col">Complete</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% if all_patients %}
+        {% for things in all_patients %}
+          {% if things.status == 'Approved' %}
+            <tr>
+              {% if things.cda_assay == True %}
+              <td>{{things.anpac_id}}</td>
+              <td>{{things.cda_status}}</td>
+              <td><a class="btn btn-warning" href="{% url 'cda_assay_status_update' 'Waiting' things.anpac_id %}" value="Waiting" type="submit"></a></td>
+              <td><a class="btn btn-primary" href="{% url 'cda_assay_status_update' 'Inprogress' things.anpac_id %}" value="Inprogress"></a></td>
+              <td><a class="btn btn-success" href="{% url 'cda_assay_status_update' 'Complete' things.anpac_id %}" value="Complete"></td>
+              {% endif%}
+            </tr>
+          {% endif %}
+        {% endfor %}
+      {% endif %}
+    </tbody>
+  </table>
+</form>
+<br><br><br>
+{% endblock %}

@@ -1,0 +1,127 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1>Approval/Sign Off Reports</h1>
+<hr>
+
+<ul class="nav nav-tabs" id="myTab" role="tablist">
+  <li class="nav-item" role="presentation">
+    <button class="nav-link {{cda_tab}}" id="cda-tab" data-bs-toggle="tab" data-bs-target="#cda" type="button" role="tab" aria-controls="cda" aria-selected="true">Cancer Diagnostic Assay (CDA)</button>
+  </li>
+  <li class="nav-item" role="presentation">
+    <button class="nav-link {{cobas_tab}}" id="cobas-tab" data-bs-toggle="tab" data-bs-target="#cobas" type="button" role="tab" aria-controls="cobas" aria-selected="false">Cobas E411</button>
+  </li>
+</ul>
+<div class="tab-content" id="myTabContent">
+  <div class="tab-pane fade show {{cda_tab}}" id="cda" role="tabpanel" aria-labelledby="cda-tab">
+    <!--CDA Requisitions that are complete-->
+    <div class="accordion" id="accordionExample">
+      {% if all_patients %}
+      {% for things in all_patients %}
+        {% if things.cda_status == 'ReportReady' %}
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="heading{{things.anpac_id}}">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#{{things.anpac_id}}" aria-expanded="false" aria-controls="collapseTwo">
+            {{things.anpac_id}}&nbsp&nbsp&nbsp Batch ID: {{things.batch_id_cda}}
+          </button>
+        </h2>
+        <div id="{{things.anpac_id}}" class="accordion-collapse collapse" aria-labelledby="heading{{things.anpac_id}}" data-bs-parent="#accordionExample">
+          <div class="accordion-body">
+            <!-- Requisition Information -->
+            <div class="">
+            <a class="btn btn-primary" href="{% url 'patient_cda_results' things.anpac_id %}" target="_blank">View Pending Report</a>
+            <a class="btn btn-success" href="{% url 'approve_report_cda' things.anpac_id %}">Approve</a>
+            </div>
+            <br>
+            <div class="row g-3">
+            		<h3><label>CDA Assay: &nbsp;</label><input type="form-control" name="cda_score" id="cda_score" value="{{things.cda_score}}" readonly></h3>
+            		CDA External Comments:
+            		<textarea rows="5" cols="80" id="cda_test_notes" name="cda_test_notes" readonly>{{ things.cda_test_notes }}</textarea>
+            	<br>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endif %}
+      {% endfor %}
+    {% endif %}
+    </div>
+  </div>
+  <div class="tab-pane fade show {{cobas_tab}}" id="cobas" role="tabpanel" aria-labelledby="cobas-tab">
+    <!-- Cobas E411 Requisitions that are complete-->
+      <div class="accordion" id="accordionExample">
+            {% if all_patients %}
+            {% for things in all_patients %}
+              {% if things.cobas_status == 'ReportReady' %}
+            <div class="accordion-item">
+              <h2 class="accordion-header" id="headingT{{things.anpac_id}}">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#{{things.anpac_id}}" aria-expanded="false" aria-controls="collapseThree">
+                  {{things.anpac_id}}
+                </button>
+              </h2>
+              <div id="{{things.anpac_id}}" class="accordion-collapse collapse" aria-labelledby="headingT{{things.anpac_id}}" data-bs-parent="#accordionExample">
+                <div class="accordion-body">
+                  <!-- Requisition Information -->
+	              <div>
+	              <a class="btn btn-primary" href="{% url 'patient_cobas_results' things.anpac_id %}" target="_blank">View Pending Report</a>
+	              <a class="btn btn-success" href="{% url 'approve_report_cobas' things.anpac_id %}">Approve</a>
+	          	  </div>
+	          	  <div class="row g-3">
+	          	  		<table class="table text-right">
+	          	  	   <thead>
+	          	  	     <tr>
+	          	  	       <th scope="col">PSA</th>
+	          	  	       <th scope="col">AFP</th>
+	          	  	       <th scope="col">CA125</th>
+	          	  	       <th scope="col">CA19-9</th>
+	          	  	       <th scope="col">CEA</th>
+	          	  	     </tr>
+	          	  	 	</thead>
+	          	  	 	<tr>
+	          	  	 		{% if things.psa_choice == True %}
+	          	  	 			<td><input type="form-control" name="psa_score" id="psa_score" value="{{things.psa_score}}" readonly></td>
+	          	  	 		{% else %}
+	          	  	 			<td>Not Selected in Requsition</td>
+	          	  	 		{% endif %}
+	          	  	 		{% if things.afp_choice == True %}
+	          	  	 			<td><input type="form-control" name="afp_score" id="afp_score" value="{{things.afp_score}}" readonly></td>
+	          	  	 		{% else %}
+	          	  	 			<td>Not Selected in Requsition</td>
+	          	  	 		{% endif %}
+	          	  	 		{% if things.ca125_choice == True %}
+	          	  	 			<td><input type="form-control" name="ca125_score" id="ca125_score" value="{{things.ca125_score}}" readonly></td>
+	          	  	 		{% else %}
+	          	  	 			<td>Not Selected in Requsition</td>
+	          	  	 		{% endif %}
+	          	  	 		{% if things.ca19_9_choice == True %}
+	          	  	 			<td><input type="form-control" name="ca19_9_score" id="ca19_9_score" value="{{things.ca19_9_score}}" readonly></td>
+	          	  	 		{% else %}
+	          	  	 			<td>Not Selected in Requsition</td>
+	          	  	 		{% endif %}
+	          	  	 		{% if things.cea_choice == True %}
+	          	  	 			<td><input type="form-control" name="cea_score" id="cea_score" value="{{things.cea_score}}" readonly></td>
+	          	  	 		{% else %}
+	          	  	 			<td>Not Selected in Requsition</td>
+	          	  	 		{% endif %}
+	          	  	 	</tr>
+	          	  	 </table>
+	          	  	 Cobas External Comments
+	          	  	 <textarea rows="5" cols="80" id="cobas_test_notes" name="cobas_test_notes" readonly>{{ things.cobas_test_notes }}</textarea>
+                   <br>
+                   Cobas Internal Comments
+                   <textarea rows="5" cols="80" id="cobas_internal_notes" name="cobas_internal_notes" readonly>{{ result_patient.0.cobas_internal_notes }}</textarea>
+	          	  </div>
+                  </object>
+                </div>
+              </div>
+            </div>
+            {% endif %}
+            {% endfor %}
+          {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

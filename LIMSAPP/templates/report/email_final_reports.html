@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block content %}
+	{% if email_patient %}
+		<h1>{{email_patient.anpac_id}}</h1>
+		<form class="" action method="POST" novalidate>
+		  {% csrf_token %}
+			<div>
+				<div class="col-md-3">
+					<input class="form-check-input" name="email_physician" type="checkbox" id="email_physician" value="True"/>
+					<label class="form-label">Physician Email Adress</label>
+					<input class="form-control" type="text" id="or_physician_email" name="or_physician_email" value="{{email_patient.or_physician_email}}" readonly>
+				</div>
+				<br>
+				<div class="col-md-3">
+					<label class="form-label">To</label>
+					<input class="form-control" type="text" id="receiever_email_address" name="receiever_email_address" placeholder="Recipient Email Address" value="">
+				</div>
+			
+			<br>
+			<div class="col-md-7">
+			  <label class="form-label">Subject</label>
+			  <input class="form-control" type="text" id="email_topic" name="email_topic" value="">
+			</div>
+			<br>
+			<div class="col-md-7">
+			  <label class="form-label">Message Body</label>
+			  <textarea rows="5" cols="100" id="email_body" name="email_body"></textarea>
+			</div>
+			Attachement Options:
+			{% if email_patient.cobas_status == 'ResultsApproved' %}
+			<!-- Checkbox for Cobas Status if 'ResultsApproved' -->
+				<div class="col-md-3">
+					<input class="form-check-input" name="cobas_report" type="checkbox" id="cobas_report" value="True"/>
+					<label class="form-label">Cobas Report</label>
+				</div>
+			{% endif %}
+			{% if email_patient.cda_status == 'ResultsApproved' %}
+			<!-- Checkbox for CDA Status if 'ResultsApproved' -->
+				<div class="col-md-3">
+					<input class="form-check-input" name="cda_report" type="checkbox" id="cda_report" value="True"/>
+					<label class="form-label">CDA Report</label>
+				</div>
+			{% endif %}
+			<br>
+			<button class="btn btn-primary" type="submit">Send</button>
+			</div>
+		</form>
+	{% endif %}
+{% endblock %}
