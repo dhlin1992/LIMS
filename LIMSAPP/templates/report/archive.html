@@ -2,6 +2,29 @@
 
 {% block content %}
 
-<h1>Archive Reports</h1>
+<h1>Archived Reports</h1>
+{% if messages %}
+  	{% for message in messages %}
+  	    <div class="alert alert-{{message.tags}}" role="alert">
+  	  {{ message }}
+  	</div>
+  	{% endfor %}
+  {% endif %}
+  <form class="d-flex" method='POST'>
+   {% csrf_token %}
+   <div class="input-group mb-3">
+     <input type="text" id="search-param" name="search-param" class="form-control" aria-label="search-Filter">
+     <div>
+     	<select class="form-select dropdown-toggle" name="search-Filter" id="search-filter" aria-label="#search-Filter">
+     	  <option selected value="anpac_id">AnPac ID</option>
+     	  <option value="batch_id">Batch ID</option>
+     	  <option value="date_entered">Date Entered</option>
+     	  <option value="custom">Custom</option>
+     	</select>
+     	</input>
+     </div>
+     <button class="btn btn-secondary" type="submit" id="search-btn">Search</button>
+   </div>
+  </form>
 
 {% endblock %}

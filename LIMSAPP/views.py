@@ -505,7 +505,17 @@ def email_final_report(request, anpac_id):
 		return render (request, 'report/email_final_reports.html', {'email_patient': email_patient})
 
 def archive (request):
-	return render (request, 'report/archive.html', {})
+	if request.method == 'POST':
+		data = request.POST
+		search_param = data.get('search-param', '')
+		if search_param == '':
+			messages.warning(request, ('Please enter in a search term'))
+			return render (request, 'report/archive.html', {})
+		else:
+			QueryDB(search_param,data['search-Filter'])
+			return render (request, 'report/archive.html', {})
+	else:
+		return render (request, 'report/archive.html', {})
 
 
 #################### Solely Functional that return no HTTPResponses Below ####################
@@ -513,6 +523,12 @@ def archive (request):
 ###########	    	    	Only Pythony Things below						    ##############
 ###########																        ##############
 ###########																        ##############
+
+
+def QueryDB (key, search_param):
+	
+	return 'Key not found'
+
 
 def FinalReportExists (path_to_file, CobasOrCDA, anpac_id):
 	import os.path
