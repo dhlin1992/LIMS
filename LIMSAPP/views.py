@@ -3,7 +3,7 @@ from pathlib import Path
 from django.core.files.storage import default_storage
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm, PasswordChangeForm
-from .models import Patient, Batch, MachineIds
+from .models import Patient, Batch, MachineIds, EmailAccounts
 from .forms import PatientForm, SignUpForm, EditProfileForm
 from django.contrib import messages
 import json
@@ -1339,6 +1339,7 @@ def emailListCobas (extracted_patient_values):
 	return patient_list
 
 def EmailNotification (anpac_id_list, reciever_email):
+	email_account = EmailAccounts
 	email = 'dennis_lin@anpacbio.com'
 	password = 'dwcepnbrmrnnfckg'
 	smtp_object = smtplib.SMTP('smtp.gmail.com', 587)
