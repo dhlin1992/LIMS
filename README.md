@@ -8,7 +8,7 @@ This web app is used to track the lifecyle of a sample through a research labora
 Python 3 Version: 3.9.7 <br>
 Django Version: 3.2.7
 
-## Deployment Instructions <br>
+## Project Setup Instructions <br>
 In terminal: <br>
 1. > django-admin startproject mysite
 
