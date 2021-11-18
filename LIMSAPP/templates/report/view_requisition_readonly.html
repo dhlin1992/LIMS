@@ -1,0 +1,267 @@
+{% extends 'base.html' %}
+
+<!--
+This page needs to have patient_info and choices inserted before rendering
+  -->
+
+{% block content %}
+
+
+
+<form class="row g-3" action method="POST" novalidate>
+  {% csrf_token %}
+    {% if patient_info %}
+      <h1>Requsition Information</h1>
+      <div class="col-md-2">
+        <label class="form-label">Creation Date</label>
+        <input class="form-control" type="text" id="req_date_created" name="req_date_created" value="{{patient_info.0.req_date_created}}" disabled>
+      </div>
+      <div class="col-md-2">
+        <label class="form-label">Last Updated</label>
+        <input class="form-control" type="text" id="" name="" value="{{patient_info.0.updated_at}}" disabled="">
+      </div>
+      <h1>Patient Information</h1>
+      <div class="col-md-2">
+        <label class="form-label">Patient Last Name</label>
+        <input id="last_name" name="last_name" type="text" class="form-control" value="{{patient_info.0.last_name}}" disabled>
+      </div>
+      <div class="col-md-2">
+        <label class="form-label">First Name</label>
+        <input class="form-control"type="text" name="first_name" id="first_name" value="{{patient_info.0.first_name}}" disabled>
+      </div>
+      <div class="col-md-1">
+        <label class="form-label">Middle Initial</label>
+        <input class="form-control" type="text" id="middle_initial" name="middle_initial" value="{{patient_info.0.middle_initial}}"disabled>
+      </div>
+      <div class="col-md-2">
+        <label class="form-label">Patient ID</label>
+        <input class="form-control" type="text" id="patient_id" name="patient_id" value="{{patient_info.0.patient_id}}" disabled>
+      </div>
+      <div class="col-md-2">
+        <label class="form-label">Sex</label>
+        <input class="form-control" type="text" id="sex" name="sex" value="{{patient_info.0.sex}}" disabled>
+      </div>
+      <div class="col-md-2">
+        <label class="form-label">Date of Birth</label>
+        <input class="form-control" type="text" id="dob" name="dob" value="{{patient_info.0.dob}}" disabled>
+      </div>
+      <div class="col-md-2">
+        <label class="form-label">Patient Phone No.</label>
+        <input class="form-control" type="text" id="phone_no" name="phone_no" value="{{patient_info.0.phone_no}}" disabled>
+      </div>
+      <div class="col-md-3">
+        <label class="form-label">Patient Email Address</label>
+        <input class="form-control" type="text" id="email_address" name="email_address" value="{{patient_info.0.email_address}}"disabled>
+      </div>
+      <div class="col-md-2">
+        <label class="form-label">Medical Record No. (MRN)</label>
+        <input class="form-control" type="text" id="mrn_no" name="mrn_no" value="{{patient_info.0.mrn_no}}" disabled>
+      </div>
+      <h2>Clinical History</h2>
+      <textarea rows="5" cols="80" id="patient_clinical_history" name="patient_clinical_history" disabled>{{patient_info.0.patient_clinical_history}}</textarea>
+      <h1>Billing Information</h1>
+      <div class="col-md-3">
+        <label class="form-label">Billing Address</label>
+        <input class="form-control" type="text" id="billing_address" name="billing_address" value="{{patient_info.0.billing_address}}"disabled>
+      </div>
+      <div class="col-md-2">
+        <label class="form-label">Billing State</label>
+        <input class="form-control" type="text" id="billing_state" name="billing_state" value="{{patient_info.0.billing_state}}" disabled>
+      </div>
+      <div class="col-md-2">
+        <label class="form-label">Zipcode</label>
+        <input class="form-control" type="text" id="billing_zipcode" name="billing_zipcode" value="{{patient_info.0.billing_zipcode}}" disabled>
+      </div>
+      <div class="col-md-2">
+        <label class="form-label">Bill To:</label>
+        <input class="form-control" type="text" id="bill_to" name="bill_to" value="{{patient_info.0.bill_to}}" disabled>
+      </div>
+      <div class="col-md-3">
+        <label class="form-label">Insurance Company</label>
+        <input class="form-control" type="text" id="insurance_company" name="insurance_company" value="{{patient_info.0.insurance_company}}" disabled>
+      </div>
+      <div class="col-md-3">
+        <label class="form-label">Insurance Policy Subscriber Name</label>
+        <input class="form-control" type="text" id="ins_pol_sub_nam" name="ins_pol_sub_nam" value="{{patient_info.0.ins_pol_sub_nam}}"disabled>
+      </div>
+      <div class="col-md-3">
+        <label class="form-label">Patient Relationship to Insurance</label>
+        <input class="form-control" type="text" id="pat_rel_to_ins_pol_sub" name="pat_rel_to_ins_pol_sub" value="{{patient_info.0.pat_rel_to_ins_pol_sub}}" disabled>
+      </div>
+      <div class="col-md-3">
+        <label class="form-label">Address</label>
+        <input class="form-control" type="text" id="pat_rel_address" name="pat_rel_address" value="{{patient_info.0.pat_rel_address}}" disabled>
+      </div>
+      <div class="col-md-3">
+        <label class="form-label">State</label>
+        <input class="form-control" type="text" id="pat_rel_state" name="pat_rel_state" value="{{patient_info.0.pat_rel_state}}" disabled>
+      </div>
+      <div class="col-md-2">
+        <label class="form-label">ZipCode</label>
+        <input class="form-control" type="text" id="pat_rel_zip" name="pat_rel_zip" value="{{patient_info.0.pat_rel_zip}}" disabled>
+      </div>
+      <div class="col-md-2">
+        <label class="form-label">Subscriber No.</label>
+        <input class="form-control" type="text" id="subscriber_no" name="subscriber_no" value="{{patient_info.0.subscriber_no}}" disabled>
+      </div>
+      <div class="col-md-2">
+        <label class="form-label">Group No.</label>
+        <input class="form-control" type="text" id="group_no" name="group_no" value="{{patient_info.0.group_no}}" disabled>
+      </div>
+      <div class="col-md-2">
+        <label class="form-label">Medicare No.</label>
+        <input class="form-control" type="text" id="medicare_no" name="medicare_no" value="{{patient_info.0.medicare_no}}" disabled>
+      </div>
+
+      <h1>Sample Information</h1>
+      <div class="col-md-2">
+        <label class="form-label">AnPac Bio ID</label>
+        <input class="form-control" type="text" id="anpac_id" name="anpac_id" value="{{patient_info.0.anpac_id}}" disabled>
+      </div>
+      <div class="col-md-2">
+        <label class="form-label">Client Name</label>
+        <input class="form-control"type="text" name="client_name" id="client_name" value="{{patient_info.0.client_name}}" disabled>
+      </div>
+      <div class="col-md-2">
+        <label class="form-label">Specimen ID</label>
+        <input class="form-control"type="text" name="sender_id" id="sender_id" value="{{patient_info.0.sender_id}}" disabled>
+      </div>
+      <div class="col-md-2">
+        <label class="form-label">Physician Name</label>
+        <input class="form-control" type="text" id="or_physician" name="or_physician" value="{{patient_info.0.or_physician}}" disabled>
+      </div>
+      <div class="col-md-2">
+        <label class="form-label">Physician Phone No.</label>
+        <input class="form-control" type="text" id="or_physician_no" name="or_physician_no" value="{{patient_info.0.or_physician_no}}" disabled>
+      </div>
+      <div class="col-md-3">
+        <label class="form-label">Physician Email Adress</label>
+        <input class="form-control" type="text" id="or_physician_email" name="or_physician_email" value="{{patient_info.0.or_physician_email}}" disabled>
+      </div>
+      <div class="col-md-2">
+        <label class="form-label">Date Collected</label>
+        <input class="form-control" type="text" id="date_collected" name="date_collected" value="{{patient_info.0.date_collected}}" disabled>
+      </div>
+      <div class="col-md-2">
+        <label class="form-label">Time Collected</label>
+        <input class="form-control" type="text" id="time_collected" name="time_collected" value="{{patient_info.0.time_collected}}" disabled>
+      </div>
+      <div class="col-md-2">
+        <label class="form-label">Collected By</label>
+        <input class="form-control" type="text" id="collected_by" name="collected_by" value="{{patient_info.0.collected_by}}" disabled>
+      </div>
+      <div class="col-md-2">
+        <label class="form-label">Sample Type</label>
+        <input class="form-control" type="text" id="sample_type" name="sample_type" value="{{patient_info.0.sample_type}}" disabled>
+      </div>
+      <div class="col-md-2">
+        <label class="form-label">Sample Volume (ml)</label>
+        <input class="form-control" type="text" id="vol_amount" name="vol_amount" value="{{patient_info.0.vol_amount}}" disabled>
+      </div>
+      <div class="col-md-3">
+        <label class="form-label">Storage Location</label>
+        <input class="form-control" type="text" id="storage_location" name="storage_location" value="{{patient_info.0.storage_location}}" disabled>
+      </div>
+
+      <h1>Individual Tests</h1>
+      <table class="table table-info">
+        <thread>
+          <tr>
+            <th scope="row"></th>
+            <th scope="col">TEST</th>
+            <th scope="col">CPT</th>
+            <th scope="col">TUBE</th>
+          </tr>
+        </thread>
+        <tbody>
+          <tr>
+            <th scope="row">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="psa_choice" id="psa_choice" value="true" {% if choices.psa_choice %} checked="checked" {% endif %} disabled>
+              </div>
+            </th>
+            <td>
+              <label class="form-check-label" for="psa_choice">PSA, Total</label>
+            </td>
+            <td>84153</td>
+            <td>SST</td>
+          </tr>
+          <tr>
+            <th scope="row">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="afp_choice" id="afp_choice" value="true" {% if choices.afp_choice %} checked="checked" {% endif %} disabled>
+              </div>
+            </th>
+            <td><label class="form-check-label" for="afp_choice">AFP</label></td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <th scope="row">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="ca125_choice" id="ca125_choice" value="true" {% if choices.ca125_choice %} checked="checked" {% endif %} disabled>
+              </div>
+            </th>
+            <td>
+              <label class="form-check-label" for="psa_choice">CA125</label>
+            </td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <th scope="row">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="ca19_9_choice" id="ca19_9_choice" value="true" {% if choices.ca19_9_choice %} checked="checked" {% endif %} disabled>
+              </div>
+            </th>
+            <td>
+              <label class="form-check-label" for="psa_choice">CA19-9</label>
+            </td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <th scope="row">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="cea_choice" id="cea_choice" value="true" {% if choices.cea_choice %} checked="checked" {% endif %} disabled>
+              </div>
+            </th>
+            <td>
+              <label class="form-check-label" for="psa_choice">CEA</label>
+            </td>
+            <td></td>
+            <td></td>
+          </tr>
+          <tr>
+            <th scope="row">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="cda_assay" id="cda_assay" value="true" {% if choices.cda_assay %} checked="checked" {% endif %} disabled>
+              </div>
+            </th>
+            <td>
+              <label class="form-check-label" for="psa_choice">CDA Assay</label>
+            </td>
+            <td></td>
+            <td>EDTA</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="col-md-2">
+        <label class="form-label">Information Submitted By</label>
+        <input class="form-control" type="text" id="info_sub_by" name="info_sub_by" value="{{patient_info.0.info_sub_by}}" readonly="" disabled>
+      </div>
+      <h1>Remarks</h1>
+      <textarea rows="5" cols="80" id="edited_notes" name="edited_notes" disabled>{{ patient_info.0.edited_notes }}</textarea>
+      <div class="col-md-2">
+        <label class="form-label">Information Approved at</label>
+        <input class="form-control" type="text" id="updated_at" name="updated_at" value="{% now 'DATETIME_FORMAT' %}" disabled>
+      </div>
+      <div class="col-md-2">
+        <label class="form-label">Information Approved By</label>
+        <input class="form-control" type="text" id="info_qc_by" name="info_qc_by" value="{{user.first_name}} {{user.last_name}}" disabled>
+      </div>
+    {% endif %} 
+  </form>
+<br><br><br>
+
+{% endblock %}

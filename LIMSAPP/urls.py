@@ -31,5 +31,6 @@ urlpatterns = [
     path('final_cobas_results/<anpac_id>', views.final_cobas_results, name='final_cobas_results'),
     path('approved_cda_results/<anpac_id>', views.approved_cda_results, name='approved_cda_results'),
     path('email_final_report/<anpac_id>', views.email_final_report, name='email_final_report'),
-     path('archive/', views.archive, name='archive'),
+    path('archive/', views.archive, name='archive'),
+    path('view_requisition_readonly/<anpac_id>', views.view_requisition_readonly, name='view_requisition_readonly'),
     ]

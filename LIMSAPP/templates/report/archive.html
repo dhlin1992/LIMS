@@ -18,13 +18,105 @@
      	<select class="form-select dropdown-toggle" name="search-Filter" id="search-filter" aria-label="#search-Filter">
      	  <option selected value="anpac_id">AnPac ID</option>
      	  <option value="batch_id">Batch ID</option>
-     	  <option value="date_entered">Date Entered</option>
-     	  <option value="custom">Custom</option>
+     	  <option value="client">Client</option>
      	</select>
      	</input>
      </div>
      <button class="btn btn-secondary" type="submit" id="search-btn">Search</button>
    </div>
   </form>
+
+{% if result %}
+	{% if search_param_found == 'anpac_id' %}
+	<!--Display options to view Requsition, Results, and Pending/Approved Reports if available-->
+  	<h1>{{result}}</h1>
+  	<a class="btn btn-success" href="{% url 'email_final_report' result %}" target="_blank">Email</a>
+  	<a class="btn btn-primary" href="{% url 'view_requisition_readonly' result %}" target="_blank">View Requsition</a>
+  	{% if result.cda_status == 'ReportReady' %}
+  	<a class="btn btn-primary" href="{% url 'patient_cda_results' result %}" target="_blank">Pending CDA Report</a>
+  	{% endif %}
+  	{% if result.cobas_status == 'ReportReady' %}
+  	<a class="btn btn-primary" href="{% url 'patient_cobas_results' result %}" target="_blank">Pending Cobas Report</a>
+  	{% endif %}
+  	{% if result.cda_status == 'ResultsApproved' %}
+  	<a class="btn btn-primary" href="{% url 'patient_cda_results' result %}" target="_blank">Pending CDA Report</a>
+  	<a class="btn btn-primary" href="{% url 'approved_cda_results' result %}" target="_blank">Approved CDA Report</a>
+  	{% endif %}
+  	{% if result.cobas_status == 'ResultsApproved' %}
+  	<a class="btn btn-primary" href="{% url 'patient_cobas_results' result %}" target="_blank">Pending Cobas Report</a>
+  	<a class="btn btn-primary" href="{% url 'final_cobas_results' result %}" target="_blank">Approved Cobas Report</a>
+  	{% endif %}
+  	{% elif search_param_found == 'batch_id' %}
+  	<!--Display Requisitions with options to view Requsition, Results, and pending/approved reports dependent on Batch ID-->
+  	<h1>Batch ID: {{key}}</h1>
+  	{% for things in result %}
+  	<div class="accordion accordion" id="accordionFlushExample">
+  	  <div class="accordion-item">
+  	    <h2 class="accordion-header" id="flush-headingOne">
+  	      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#{{things.anpac_id}}" aria-expanded="false" aria-controls="flush-collapseOne">
+  	        {{things.anpac_id}}
+  	      </button>
+  	    </h2>
+  	    <div id="{{things.anpac_id}}" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
+  	      <div class="accordion-body">
+  	      	<!--Insert Requisition/reporting information below-->
+  	      	<a class="btn btn-primary" href="{% url 'view_requisition_readonly' things.anpac_id %}" target="_blank">Requsition</a>
+  	      	<a class="btn btn-success" href="{% url 'email_final_report' things.anpac_id %}" target="_blank">Email</a>
+  	      	{% if things.cda_status == 'ReportReady' %}
+  	      	<a class="btn btn-primary" href="{% url 'patient_cda_results' things.anpac_id %}" target="_blank">Pending CDA Report</a>
+  	      	{% endif %}
+  	      	{% if things.cobas_status == 'ReportReady' %}
+  	      	<a class="btn btn-primary" href="{% url 'patient_cobas_results' things.anpac_id %}" target="_blank">Pending Cobas Report</a>
+  	      	{% endif %}
+  	      	{% if things.cda_status == 'ResultsApproved' %}
+  	      	<a class="btn btn-primary" href="{% url 'patient_cda_results' things.anpac_id %}" target="_blank">Pending CDA Report</a>
+  	      	<a class="btn btn-primary" href="{% url 'approved_cda_results' things.anpac_id%}" target="_blank">Approved CDA Report</a>
+  	      	{% endif %}
+  	      	{% if things.cobas_status == 'ResultsApproved' %}
+  	      	<a class="btn btn-primary" href="{% url 'patient_cobas_results' things.anpac_id %}" target="_blank">Pending Cobas Report</a>
+  	      	<a class="btn btn-primary" href="{% url 'final_cobas_results' things.anpac_id %}" target="_blank">Approved Cobas Report</a>
+  	      	{% endif %}
+  	      </div>
+  	    </div>
+  	  </div>
+  	</div>
+  	{% endfor %}
+  	{% elif search_param_found == 'client' %}
+  	<!--Display Requisitions with options to view Requsition, Results, and pending/approved reports dependent on Client-->
+  	<h1>Client: {{key}}</h1>
+  		{% for things in result %}
+  		<div class="accordion accordion" id="accordionFlushExample">
+  		  <div class="accordion-item">
+  		    <h2 class="accordion-header" id="flush-headingOne">
+  		      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#{{things.anpac_id}}" aria-expanded="false" aria-controls="flush-collapseOne">
+  		        {{things.anpac_id}}
+  		      </button>
+  		    </h2>
+  		    <div id="{{things.anpac_id}}" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
+  		      <div class="accordion-body">
+  		      	<!--Insert Requisition/reporting information below-->
+  		      	<a class="btn btn-success" href="{% url 'email_final_report' things.anpac_id %}" target="_blank">Email</a>
+  		      	<a class="btn btn-primary" href="{% url 'view_requisition_readonly' things.anpac_id %}" target="_blank">View Requsition</a>
+  		      	{% if things.cda_status == 'ReportReady' %}
+  		      	<a class="btn btn-primary" href="{% url 'patient_cda_results' things.anpac_id %}" target="_blank">Pending CDA Report</a>
+  		      	{% endif %}
+  		      	{% if things.cobas_status == 'ReportReady' %}
+  		      	<a class="btn btn-primary" href="{% url 'patient_cobas_results' things.anpac_id %}" target="_blank">Pending Cobas Report</a>
+  		      	{% endif %}
+  		      	{% if things.cda_status == 'ResultsApproved' %}
+  		      	<a class="btn btn-primary" href="{% url 'patient_cda_results' things.anpac_id %}" target="_blank">Pending CDA Report</a>
+  		      	<a class="btn btn-primary" href="{% url 'approved_cda_results' things.anpac_id%}" target="_blank">Approved CDA Report</a>
+  		      	{% endif %}
+  		      	{% if things.cobas_status == 'ResultsApproved' %}
+  		      	<a class="btn btn-primary" href="{% url 'patient_cobas_results' things.anpac_id %}" target="_blank">Pending Cobas Report</a>
+  		      	<a class="btn btn-primary" href="{% url 'final_cobas_results' things.anpac_id %}" target="_blank">Approved Cobas Report</a>
+  		      	{% endif %}
+  		      </div>
+  		    </div>
+  		  </div>
+  		</div>
+  		{% endfor %}
+  	{% endif %}
+{% endif %}
 
 {% endblock %}

@@ -512,10 +512,15 @@ def archive (request):
 			messages.warning(request, ('Please enter in a search term'))
 			return render (request, 'report/archive.html', {})
 		else:
-			QueryDB(search_param,data['search-Filter'])
-			return render (request, 'report/archive.html', {})
+			result = QueryDB(search_param,data['search-Filter'])
+			return render (request, 'report/archive.html', {'result':result, 'search_param_found': data['search-Filter'], 'key': search_param})
 	else:
 		return render (request, 'report/archive.html', {})
+
+def view_requisition_readonly (request, anpac_id):
+	patient_info = Patient.objects.filter(anpac_id=anpac_id)
+	choices = IndividualTests(patient_info)
+	return render (request, 'report/view_requisition_readonly.html', {"patient_info":patient_info, "choices": choices})
 
 
 #################### Solely Functional that return no HTTPResponses Below ####################
@@ -526,7 +531,30 @@ def archive (request):
 
 
 def QueryDB (key, search_param):
-	
+	if search_param == 'anpac_id':
+		try:
+			return Patient.objects.get(anpac_id=key)
+		except Exception as e:
+			return e
+	elif search_param == 'batch_id':
+		if key[0] == 'C':
+			try:
+				return Patient.objects.filter(batch_id_cda=key)
+			except Exception as e:
+				return e
+		elif key[0] =='R':
+			try:
+				return Patient.objects.filter(batch_id_cobas=key)
+			except Exception as e:
+				return e
+		else:
+			return 'Not a valid Batch ID'
+	elif search_param == 'client':
+		try:
+			return Patient.objects.filter(client_name=key)
+		except Exception as e:
+				return e
+
 	return 'Key not found'
 
 
