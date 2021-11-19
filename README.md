@@ -39,7 +39,7 @@ Navigate to the address displayed in terminal in browser (ex. Chrome)
 
 # Emailing
 
-Emailing is set up through Google Account services. You would need to be able to create an app password and save your email and app password inside the Database with the identifier 'EmailNotification'
+Emailing is set up through Google Account services. You would need to be able to create an app password and save your email and app password inside the Database via Django admin console with the identifier 'EmailNotification'
 
 Email address: 'example@gmail.com'
 
