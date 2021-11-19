@@ -118,7 +118,7 @@ class Batch(models.Model):
 
 class MachineIds(models.Model):
 	machine_identifier = models.CharField(max_length = 10, null=True, blank=True) #CDA4.1, E411.1 or whatever
-	#machine_type = models.CharField(max_length = 10, null=True, blank=True) #cda or cobas
+	machine_type = models.CharField(max_length = 10, null=True, blank=True) #cda or cobas
 	#machine_generation = models.CharField(max_length = 10, null=True, blank=True) #relevant for CDA as of 11/04/2021 '1' - '4'
 	batch_amount = models.CharField(max_length = 4, null=True, blank=True) #too lazy to figure out incrementing int, keeping stuff as String for now just convert while incrementing
 

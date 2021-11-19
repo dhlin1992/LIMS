@@ -28,14 +28,14 @@
 			  <textarea rows="5" cols="100" id="email_body" name="email_body"></textarea>
 			</div>
 			Attachment Options:
-			{% if email_patient.cobas_status == 'ResultsApproved' %}
+			{% if email_patient.cobas_status == 'ResultsApproved' or  email_patient.cobas_status == 'Archived' %}
 			<!-- Checkbox for Cobas Status if 'ResultsApproved' -->
 				<div class="col-md-3">
 					<input class="form-check-input" name="cobas_report" type="checkbox" id="cobas_report" value="True"/>
 					<label class="form-label">Cobas Report</label>
 				</div>
 			{% endif %}
-			{% if email_patient.cda_status == 'ResultsApproved' %}
+			{% if email_patient.cda_status == 'ResultsApproved' or  email_patient.cda_status == 'Archived'%}
 			<!-- Checkbox for CDA Status if 'ResultsApproved' -->
 				<div class="col-md-3">
 					<input class="form-check-input" name="cda_report" type="checkbox" id="cda_report" value="True"/>

@@ -367,7 +367,6 @@ def approve_report_cda(request, anpac_id):
 	all_patients = Patient.objects.all()
 	cda_tab = 'active'
 	cobas_tab = ''
-	#ArchiveRequsition(anpac_id, 'cda')
 	return render(request, 'report/approval_sign_off.html', {'all_patients':all_patients, "cda_tab": cda_tab, 'cobas_tab': cobas_tab})
 
 def approve_report_cobas(request, anpac_id):
@@ -377,7 +376,6 @@ def approve_report_cobas(request, anpac_id):
 	all_patients = Patient.objects.all()
 	cobas_tab = 'active'
 	cda_tab = ''
-	#ArchiveRequsition(anpac_id, 'cobas')
 	return render(request, 'report/approval_sign_off.html', {'all_patients':all_patients, "cda_tab": cda_tab, 'cobas_tab': cobas_tab})
 	#return redirect ('approval_sign_off')
 
@@ -420,12 +418,14 @@ def email_final_report(request, anpac_id):
 		 
 		body = data.get('email_body', 'Sent by AnPac Bio')
 		# put your email here
-		sender = 'dennis_lin@anpacbio.com'
+		email_account = EmailAccounts.objects.get(account_name= 'EmailNotification')
+		email = email_account.email_address
+		password = email_account.email_password
+		sender = email
 		# get the password in the gmail (manage your google account, click on the avatar on the right)
 		# then go to security (right) and app password (center)
 		# insert the password and then choose mail and this computer and then generate
 		# copy the password generated here
-		password = 'dwcepnbrmrnnfckg'
 		# put the email of the receiver here
 		physician_destination_selected = data.get('email_physician', '')
 		if physician_destination_selected == 'True':
@@ -464,6 +464,7 @@ def email_final_report(request, anpac_id):
 			# add header with pdf name
 			payload.add_header('Content-Decomposition', 'attachment', filename=pdfname)
 			message.attach(payload)
+			ArchiveRequsition(anpac_id, 'cda')
 		if cobas_report_select == 'True':
 			if FinalReportExists(path_to_dir, '_cobas_Approved', anpac_id):
 				print('Cobas Report already created')
@@ -485,6 +486,7 @@ def email_final_report(request, anpac_id):
 			# add header with pdf name
 			payload.add_header('Content-Decomposition', 'attachment', filename=pdfname)
 			message.attach(payload)
+			ArchiveRequsition(anpac_id, 'cobas')
 		 
 		#use gmail with port
 		session = smtplib.SMTP('smtp.gmail.com', 587)
@@ -525,6 +527,23 @@ def view_requisition_readonly (request, anpac_id):
 	choices = IndividualTests(patient_info)
 	return render (request, 'report/view_requisition_readonly.html', {"patient_info":patient_info, "choices": choices})
 
+def devices (request):
+	all_devices = MachineIds.objects.all()
+	cda_status = 'active'
+	cobas_status = ''
+	return render (request, 'product/devices.html', {'all_devices': all_devices, 'cda_status': cda_status})
+
+def ResetBatchAmount(request, machine_identifier):
+	status = ResetDeviceBatchAmount(machine_identifier)
+	cda_status = ''
+	cobas_status = ''
+	all_devices = MachineIds.objects.all()
+	if status == 'cda':
+		cda_status = 'active'
+	else:
+		cobas_status = 'active'
+	return render (request, 'product/devices.html', {'all_devices': all_devices, 'cda_status': cda_status, 'cobas_status': cobas_status})
+
 
 #################### Solely Functional that return no HTTPResponses Below ####################
 ###########																        ##############
@@ -533,6 +552,16 @@ def view_requisition_readonly (request, anpac_id):
 ###########																        ##############
 
 
+def ResetDeviceBatchAmount (machine_identifier):
+	try:
+		reset_device = MachineIds.objects.get(machine_identifier=machine_identifier)
+		reset_device.batch_amount = '0001'
+		reset_device.save()
+		return reset_device.machine_type
+	except Exception as e:
+		return e
+
+#filter for searchs in archives
 def QueryDB (key, search_param):
 	if search_param == 'anpac_id':
 		try:
@@ -1415,11 +1444,11 @@ def ArchiveRequsition (anpac_id, cobasorcda):
 	#check if CDA has been selected
 	if cobasorcda == 'cobas':
 		if archive_patient.cda_status == 'ResultsApproved' or archive_patient.cda_status == 'Not-Selected':
-			archive_patient.req_status = 'Archive'
+			archive_patient.cda_status = 'Archived'
 			archive_patient.save()
 	if cobasorcda == 'cda':
 		if archive_patient.cobas_status =='ResultsApproved' or archive_patient.cobas_status == 'Not-Selected':
-			archive_patient.req_status = 'Archive'
+			archive_patient.cobas_status = 'Archived'
 			archive_patient.save()
 
 

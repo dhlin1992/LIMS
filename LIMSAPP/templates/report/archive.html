@@ -32,17 +32,17 @@
   	<h1>{{result}}</h1>
   	<a class="btn btn-success" href="{% url 'email_final_report' result %}" target="_blank">Email</a>
   	<a class="btn btn-primary" href="{% url 'view_requisition_readonly' result %}" target="_blank">View Requsition</a>
-  	{% if result.cda_status == 'ReportReady' %}
+  	{% if result.cda_status == 'ReportReady'%}
   	<a class="btn btn-primary" href="{% url 'patient_cda_results' result %}" target="_blank">Pending CDA Report</a>
   	{% endif %}
-  	{% if result.cobas_status == 'ReportReady' %}
+  	{% if result.cobas_status == 'ReportReady'%}
   	<a class="btn btn-primary" href="{% url 'patient_cobas_results' result %}" target="_blank">Pending Cobas Report</a>
   	{% endif %}
-  	{% if result.cda_status == 'ResultsApproved' %}
+  	{% if result.cda_status == 'ResultsApproved' or result.cda_status == 'Archived'%}
   	<a class="btn btn-primary" href="{% url 'patient_cda_results' result %}" target="_blank">Pending CDA Report</a>
   	<a class="btn btn-primary" href="{% url 'approved_cda_results' result %}" target="_blank">Approved CDA Report</a>
   	{% endif %}
-  	{% if result.cobas_status == 'ResultsApproved' %}
+  	{% if result.cobas_status == 'ResultsApproved' or result.cobas_status == 'Archived'%}
   	<a class="btn btn-primary" href="{% url 'patient_cobas_results' result %}" target="_blank">Pending Cobas Report</a>
   	<a class="btn btn-primary" href="{% url 'final_cobas_results' result %}" target="_blank">Approved Cobas Report</a>
   	{% endif %}
