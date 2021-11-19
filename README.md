@@ -36,3 +36,11 @@ In terminal
 ![image](https://user-images.githubusercontent.com/48298105/142499744-56b282ad-00e5-4bdc-a81b-6b578dd4dfc4.png)
 
 Navigate to the address displayed in terminal in browser (ex. Chrome)
+
+# Emailing
+
+Emailing is set up through Google Account services. You would need to be able to create an app password and save your email and app password inside the Database with the identifier 'EmailNotification'
+
+Email address: 'example@gmail.com'
+
+Email Password: Google App Password (not your login password)
