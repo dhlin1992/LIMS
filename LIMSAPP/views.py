@@ -513,6 +513,9 @@ def archive (request):
 			return render (request, 'report/archive.html', {})
 		else:
 			result = QueryDB(search_param,data['search-Filter'])
+			if str(result) == 'Patient matching query does not exist.':
+				messages.warning(request, ( search_param + ' not found. Please try again!'))
+				result = ''
 			return render (request, 'report/archive.html', {'result':result, 'search_param_found': data['search-Filter'], 'key': search_param})
 	else:
 		return render (request, 'report/archive.html', {})
