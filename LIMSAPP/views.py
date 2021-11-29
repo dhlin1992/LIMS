@@ -159,7 +159,7 @@ def user_login(request):
 			return redirect('home')
 		else:
 			messages.success(request, ('Error Logging In - Please Try Again...'))
-			return redirect('login')
+			return redirect('user_login')
 	else:
 		return render(request, 'authenticate/login.html', {})
 
