@@ -1,17 +1,16 @@
 from django.urls import path
-from . import views
-
+from . import views, HomeView, RequisitionView
 
 urlpatterns = [
-    path('', views.home, name='home'),
+    path('', HomeView.home, name='home'),
     path('assay/', views.assay, name='assay'),
     path('html_testing/', views.html_testing, name='html_testing'),
-    path('requisition_form/', views.requisition_form,name='requisition_form'),
-    path('search_req/', views.search_req, name='search_req'),
+    path('requisition_form/', RequisitionView.requisition_form,name='requisition_form'),
+    path('search_req/', RequisitionView.search_req, name='search_req'),
     path('open_report/<anpac_id>', views.open_report, name='open_report'),
     path('succcess/', views.success, name='success'),
     path('login', views.user_login, name='user_login'),
-    path('import_requisitions/', views.import_requisitions, name='import_requisitions'),
+    path('import_requisitions/', RequisitionView.import_requisitions, name='import_requisitions'),
     path('logout/', views.logout_user, name='logout_user'),
     path('register/', views.register_user, name='register'),
     path('edit_profile/', views.edit_profile,name='edit_profile'),
@@ -27,11 +26,11 @@ urlpatterns = [
     path('patient_cda_results/<anpac_id>', views.patient_cda_results, name='patient_cda_results'),
     path('approve_report_cda/<anpac_id>', views.approve_report_cda, name='approve_report_cda'),
     path('approve_report_cobas/<anpac_id>', views.approve_report_cobas, name='approve_report_cobas'),
-    path('download_req_excel/', views.download_req_excel, name='download_req_excel'),
+    path('download_req_excel/', RequisitionView.download_req_excel, name='download_req_excel'),
     path('final_cobas_results/<anpac_id>', views.final_cobas_results, name='final_cobas_results'),
     path('approved_cda_results/<anpac_id>', views.approved_cda_results, name='approved_cda_results'),
     path('email_final_report/<anpac_id>', views.email_final_report, name='email_final_report'),
-    path('archive/', views.archive, name='archive'),
+    path('archive/', RequisitionView.archive, name='archive'),
     path('view_requisition_readonly/<anpac_id>', views.view_requisition_readonly, name='view_requisition_readonly'),
     path('devices/', views.devices, name='devices'),
     path('ResetBatchAmount/<machine_identifier>', views.ResetBatchAmount, name='ResetBatchAmount'),

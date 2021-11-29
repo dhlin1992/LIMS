@@ -32,9 +32,7 @@ cobas_list_models = ['E411.1', 'E411.2']
 cda_list_models= ['CDA4.1', 'CDA3.2', 'CDA3.1', 'CDA2.1', 'CDA1.1']
 
 # Create your views here.
-def home(request):
-	return render(request, 'home.html', {})
-	#return render (request, 'req_patient_info.html', {})
+
 
 def import_requisitions(request):
 	today = date.today()
@@ -83,7 +81,7 @@ def requisition_form(request):
 			return render(request, 'home.html', {})
 	else:
 
-		return render(request,'requisition.html',{})
+		return render(request,'requisitions/requisition.html',{})
 
 def search_req(request):
 	if request.method == 'POST':
@@ -99,7 +97,7 @@ def search_req(request):
 				return redirect('search_req')
 	else:
 		all_items = Patient.objects.all
-		return render(request, 'search_req.html', {"all_items":all_items})
+		return render(request, 'requisitions/search_req.html', {"all_items":all_items})
 
 def open_report(request, anpac_id):
 	if request.method == 'POST':
