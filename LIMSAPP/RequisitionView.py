@@ -6,7 +6,7 @@ from LIMSAPP.UpdateTestFunctions import update_test_status_fromQC, IndividualTes
 from django.contrib import messages
 from django.core.files.storage import default_storage
 import pandas
-from . models import Patient
+from . models import Patient, EmailAccounts
 from .forms import PatientForm
 import mimetypes
 from django.http import FileResponse, Http404, HttpResponse
@@ -91,6 +91,114 @@ def archive (request):
 			return render (request, 'report/archive.html', {'result':result, 'search_param_found': data['search-Filter'], 'key': search_param})
 	else:
 		return render (request, 'report/archive.html', {})
+
+def view_requisition_readonly (request, anpac_id):
+	patient_info = Patient.objects.filter(anpac_id=anpac_id)
+	choices = IndividualTests(patient_info)
+	return render (request, 'report/view_requisition_readonly.html', {"patient_info":patient_info, "choices": choices})
+
+def email_final_report(request, anpac_id):
+	path_to_dir = "/Users/dennisl/Desktop/Engineering/SEPrograms/AnpacApps/ANPACLIMS/finalreports/" + anpac_id + "/approved/"
+	if request.method == 'POST':
+		data = request.POST
+
+		#Check to make sure final reports directory exists
+		DirectoryExists(path_to_dir)
+
+		#Check to make sure PDF report of approved results exists, if not create and fill under AnpacID/approved directory
+		cda_report_select = data.get('cda_report', '')
+		cobas_report_select = data.get('cobas_report', '')
+		destination_email = ''
+		 
+		body = data.get('email_body', 'Sent by AnPac Bio')
+		# put your email here
+		email_account = EmailAccounts.objects.get(account_name= 'EmailNotification')
+		email = email_account.email_address
+		password = email_account.email_password
+		sender = email
+		# get the password in the gmail (manage your google account, click on the avatar on the right)
+		# then go to security (right) and app password (center)
+		# insert the password and then choose mail and this computer and then generate
+		# copy the password generated here
+		# put the email of the receiver here
+		physician_destination_selected = data.get('email_physician', '')
+		if physician_destination_selected == 'True':
+			patient_info = Patient.objects.get(anpac_id=anpac_id)
+			destination_email = patient_info.or_physician_email
+		else:
+			destination_email = data.get('receiever_email_address', sender)
+		receiver = destination_email
+		 
+		#Setup the MIME
+		message = MIMEMultipart()
+		message['From'] = sender
+		message['To'] = receiver
+		message['Subject'] = data.get('email_topic', anpac_id + 'Report')
+		 
+		message.attach(MIMEText(body, 'plain'))
+
+		if cda_report_select == 'True':
+			if FinalReportExists(path_to_dir, '_cda_Approved', anpac_id):
+				print('CDA Report already created')
+			else:
+				PDFCreateFinalReport(anpac_id, '_cda_Approved', FillDataCDAReport(anpac_id, request.user))
+				#print('CDA Report successfully created')
+			pdfname = path_to_dir + anpac_id + '_cda_Approved.pdf'
+			
+			# open the file in bynary
+			binary_pdf = open(pdfname, 'rb')
+			 
+			payload = MIMEBase('application', 'octate-stream', Name=(anpac_id + '_cda_report.pdf'))
+			# payload = MIMEBase('application', 'pdf', Name=pdfname)
+			payload.set_payload((binary_pdf).read())
+			 
+			# enconding the binary into base64
+			encoders.encode_base64(payload)
+			 
+			# add header with pdf name
+			payload.add_header('Content-Decomposition', 'attachment', filename=pdfname)
+			message.attach(payload)
+			ArchiveRequsition(anpac_id, 'cda')
+		if cobas_report_select == 'True':
+			if FinalReportExists(path_to_dir, '_cobas_Approved', anpac_id):
+				print('Cobas Report already created')
+			else:
+				PDFCreateFinalReport(anpac_id, '_cobas_Approved', FillDataCobasReport(anpac_id, request.user))
+				#print('Cobas Report successfully created')
+			pdfname = path_to_dir + anpac_id + '_cobas_Approved.pdf'
+			 
+			# open the file in bynary
+			binary_pdf = open(pdfname, 'rb')
+			 
+			payload = MIMEBase('application', 'octate-stream', Name=(anpac_id + '_cobas_report.pdf'))
+			# payload = MIMEBase('application', 'pdf', Name=pdfname)
+			payload.set_payload((binary_pdf).read())
+			 
+			# enconding the binary into base64
+			encoders.encode_base64(payload)
+			 
+			# add header with pdf name
+			payload.add_header('Content-Decomposition', 'attachment', filename=pdfname)
+			message.attach(payload)
+			ArchiveRequsition(anpac_id, 'cobas')
+		 
+		#use gmail with port
+		session = smtplib.SMTP('smtp.gmail.com', 587)
+		 
+		#enable security
+		session.starttls()
+		 
+		#login with mail_id and password
+		session.login(sender, password)
+		 
+		text = message.as_string()
+		session.sendmail(sender, receiver, text)
+		session.quit()
+		#print('Mail Sent')
+		return render (request, 'successful.html', {})
+	else:
+		email_patient = Patient.objects.get(anpac_id=anpac_id)
+		return render (request, 'report/email_final_reports.html', {'email_patient': email_patient})
 
 def checkNan (string_check):
 		if string_check == 'nan':
@@ -209,5 +317,4 @@ def QueryDB (key, search_param):
 			return Patient.objects.filter(client_name=key)
 		except Exception as e:
 				return e
-
 	return 'Key not found'

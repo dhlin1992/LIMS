@@ -1,9 +1,9 @@
 from django.urls import path
-from . import views, HomeView, RequisitionView
+from . import views, HomeView, RequisitionView, AssayView
 
 urlpatterns = [
     path('', HomeView.home, name='home'),
-    path('assay/', views.assay, name='assay'),
+    path('assay/', AssayView.assay, name='assay'),
     path('html_testing/', views.html_testing, name='html_testing'),
     path('requisition_form/', RequisitionView.requisition_form,name='requisition_form'),
     path('search_req/', RequisitionView.search_req, name='search_req'),
@@ -16,9 +16,9 @@ urlpatterns = [
     path('edit_profile/', views.edit_profile,name='edit_profile'),
     path('change_password/', views.change_password, name='change_password'),
     path('test_status_update/',views.test_status_update, name='test_status_update'),
-    path('result_entry/', views.result_entry, name='result_entry'),
+    path('result_entry/', AssayView.result_entry, name='result_entry'),
     path('create_report/', views.create_report, name='create_report'),
-    path('op_machine_assignment/', views.op_machine_assignment, name='op_machine_assignment'),
+    path('op_machine_assignment/', AssayView.op_machine_assignment, name='op_machine_assignment'),
     path('approval_sign_off/', views.approval_sign_off, name='approval_sign_off'),
     path('final_reports/', views.final_reports, name='final_reports'),
     path('patient_view_results/<anpac_id>', views.patient_view_results, name='patient_view_results'),
@@ -31,7 +31,7 @@ urlpatterns = [
     path('approved_cda_results/<anpac_id>', views.approved_cda_results, name='approved_cda_results'),
     path('email_final_report/<anpac_id>', views.email_final_report, name='email_final_report'),
     path('archive/', RequisitionView.archive, name='archive'),
-    path('view_requisition_readonly/<anpac_id>', views.view_requisition_readonly, name='view_requisition_readonly'),
+    path('view_requisition_readonly/<anpac_id>', RequisitionView.view_requisition_readonly, name='view_requisition_readonly'),
     path('devices/', views.devices, name='devices'),
     path('ResetBatchAmount/<machine_identifier>', views.ResetBatchAmount, name='ResetBatchAmount'),
     ]
