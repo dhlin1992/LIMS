@@ -302,7 +302,6 @@ def patient_view_results(request, anpac_id):
 				result_patient.ca19_9_score = data['ca19_9_score']
 			if result_patient.cea_choice == True and not result_patient.cea_score == data['cea_score']:
 				result_patient.cea_score = data['cea_score']
-
 		result_patient.save()
 		return redirect('create_report')
 
@@ -401,7 +400,6 @@ def final_cobas_results(request, anpac_id):
 	return
 
 def email_final_report(request, anpac_id):
-
 	path_to_dir = "/Users/dennisl/Desktop/Engineering/SEPrograms/AnpacApps/ANPACLIMS/finalreports/" + anpac_id + "/approved/"
 	if request.method == 'POST':
 		data = request.POST

@@ -1,22 +1,21 @@
 from django.urls import path
-from . import views, HomeView, RequisitionView, AssayView
+from . import views, HomeView, RequisitionView, AssayView, UserView, ResultEntryView
 
 urlpatterns = [
     path('', HomeView.home, name='home'),
     path('assay/', AssayView.assay, name='assay'),
-    path('html_testing/', views.html_testing, name='html_testing'),
     path('requisition_form/', RequisitionView.requisition_form,name='requisition_form'),
     path('search_req/', RequisitionView.search_req, name='search_req'),
-    path('open_report/<anpac_id>', views.open_report, name='open_report'),
+    path('open_report/<anpac_id>', RequisitionView.open_report, name='open_report'),
     path('succcess/', views.success, name='success'),
-    path('login', views.user_login, name='user_login'),
+    path('login', UserView.user_login, name='user_login'),
     path('import_requisitions/', RequisitionView.import_requisitions, name='import_requisitions'),
-    path('logout/', views.logout_user, name='logout_user'),
-    path('register/', views.register_user, name='register'),
-    path('edit_profile/', views.edit_profile,name='edit_profile'),
-    path('change_password/', views.change_password, name='change_password'),
+    path('logout/', UserView.logout_user, name='logout_user'),
+    path('register/', UserView.register_user, name='register'),
+    path('edit_profile/', UserView.edit_profile,name='edit_profile'),
+    path('change_password/', UserView.change_password, name='change_password'),
     path('test_status_update/',views.test_status_update, name='test_status_update'),
-    path('result_entry/', AssayView.result_entry, name='result_entry'),
+    path('result_entry/', ResultEntryView.result_entry, name='result_entry'),
     path('create_report/', views.create_report, name='create_report'),
     path('op_machine_assignment/', AssayView.op_machine_assignment, name='op_machine_assignment'),
     path('approval_sign_off/', views.approval_sign_off, name='approval_sign_off'),

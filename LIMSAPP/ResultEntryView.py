@@ -1,74 +1,37 @@
 from django.shortcuts import render, redirect
 from pathlib import Path
-from . models import Patient, MachineIds, Batch
-from LIMSAPP.DirectoryFunctions import DirectoryExists
-from LIMSAPP.UpdateTestFunctions import updatePatientDatabase
+from django.core.files.storage import default_storage
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.forms import UserCreationForm, UserChangeForm, PasswordChangeForm
+from .models import Patient, Batch, MachineIds, EmailAccounts
+from .forms import PatientForm, SignUpForm, EditProfileForm
 from django.contrib import messages
+import json
+import csv
+import logging
+import pdfrw
+import pandas
+import mimetypes
 import datetime
 from datetime import date
+from django.http import FileResponse, Http404, HttpResponse
+import smtplib
+import getpass
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from email.mime.base import MIMEBase
+from email import encoders
 
+ANNOT_KEY = '/Annots'
+ANNOT_FIELD_KEY = '/T'
+ANNOT_VAL_KEY = '/V'
+ANNOT_RECT_KEY = '/Rect'
+SUBTYPE_KEY = '/Subtype'
+WIDGET_SUBTYPE_KEY = '/Widget'
 cobas_list_models = ['E411.1', 'E411.2']
 cda_list_models= ['CDA4.1', 'CDA3.2', 'CDA3.1', 'CDA2.1', 'CDA1.1']
 
-def op_machine_assignment (request):
-	if request.method == 'POST':
-		data = request.POST
-		try:
-			#Need to check that user made a selection for Machine
-			machine_model_cda = request.POST.get('cda_machine_num', '')
-			machine_model_cobas = request.POST.get('cobas_machine_num', '')
-			cda_requsitions = extractRequisitionAnpacIDCDA(data)
-			cobas_requsitions = extractRequisitionAnpacIDCobas(data)
-
-			# Cobas 28 max samples
-
-			# CDA 40 not including controls
-			if cda_requsitions:
-				if machine_model_cda:
-					batch_name = BatchIDCreate(CobasOrCDA(machine_model_cda, cobas_list_models, cda_list_models), MachineNumberCDA(machine_model_cda), BatchYear(), getbatchnum(machine_model_cda))
-					UpdateRequsitionBatchOPMachineModelCDA(cda_requsitions, batch_name, machine_model_cda, data['operator_name'])
-					messages.success(request, ('Batch ' + batch_name + ' created successfully.'))
-					return redirect('op_machine_assignment')
-				else:
-					messages.success(request, ('Please select a CDA Machine below.'))
-					return redirect('op_machine_assignment')
-			if cobas_requsitions:
-				if machine_model_cobas:
-					batch_name = BatchIDCreate(CobasOrCDA(machine_model_cobas, cobas_list_models, cda_list_models), MachineNumberCobas(machine_model_cobas), BatchYear(), getbatchnum(machine_model_cobas))
-					UpdateRequsitionBatchOPMachineModelCobas(cobas_requsitions, batch_name, machine_model_cobas, data['operator_name'])
-					messages.success(request, ('Batch ' + batch_name + ' created successfully.'))
-					return redirect('op_machine_assignment')
-				else:
-					messages.success(request, ('Please select a Cobas Machine below.'))
-					return redirect('op_machine_assignment')
-		except Exception as e:
-			print(e)
-		return redirect ('op_machine_assignment')
-	else:
-		all_patients = Patient.objects.all()
-		return render(request, 'assay/op_machine_assignment.html', {'all_patients':all_patients})
-
-def assay(request):
-	cda_tab = ''
-	cobas_tab = ''
-	if request.method == 'POST':
-		post_data = request.POST
-		tab = update_test_status_batch(post_data)
-		all_patients = Patient.objects.all()
-		all_batch = Batch.objects.all()
-		cda_tab = ''
-		cobas_tab = ''
-		if tab == 'cobas':
-			cobas_tab = 'active'
-			cda_tab = ''
-		else:
-			cda_tab = 'active'
-		return render(request, 'assay/assay.html', {"all_patients": all_patients, "all_batch": all_batch, "cda_tab": cda_tab, 'cobas_tab': cobas_tab})
-	else:	
-		all_patients = Patient.objects.all()
-		all_batch = Batch.objects.all()
-		cda_tab = 'active'
-		return render(request, 'assay/assay.html', {"all_patients": all_patients, "all_batch": all_batch, "cda_tab": cda_tab, 'cobas_tab': cobas_tab})
+# Create your views here.
 
 def result_entry(request):
 	today = date.today()
@@ -80,13 +43,15 @@ def result_entry(request):
 		return redirect('result_entry')
 
 	elif request.method == 'POST' and request.FILES['csv_file_values']:
-		print('File detected, importing...')
 		DirectoryExists (path_to_dir)
 		try:
+			#print("File Detected")
+			#print(request.FILES['csv_file_values'])
 			file = request.FILES['csv_file_values']
+			#file_name = default_storage.save(file.name, file)
 			file_name = default_storage.save(path_to_dir + file.name, file)
+			#print('File saved successfully')
 			extracted_patient_values = readCSVFile(path_to_dir + file.name)
-			print(extracted_patient_values)
 			updatePatientDatabase(extracted_patient_values)
 			print(emailListCobas(extracted_patient_values))
 			EmailNotification(emailListCobas(extracted_patient_values), 'dennis_lin@anpacbio.com')
@@ -99,159 +64,12 @@ def result_entry(request):
 		all_patients = Patient.objects.all
 		return render(request, 'assay/assay_result_entry.html', {"all_patients": all_patients})
 
-def readCSVFile (csv_file):
-	# open the file in universal line ending mode 
-	with open(csv_file, 'rU') as infile:
-		# read the file as a dictionary for each row ({header : value})
-		reader = csv.DictReader(infile)
-		data = {}
-		patient_ids = ()
-		for row in reader:
-			for header, value in row.items():
-				try:
-					data[header].append(value)
-				except KeyError:
-					data[header] = [value]
-	#
-	with open(csv_file, 'r') as f:
-		str_list = [row[6] for row in csv.reader(f)]
-		patient_ids = str_list[2:]
 
-	
-	
-	#print('data:' + str(data))
-
-	Assigned_Patient_Values = AssignPatientValues(patient_ids, data)
-	return Assigned_Patient_Values
-
-def AssignPatientValues (patient_ids, raw_data):
-	# extract the variables you want
-	CA19_9_Values = raw_data['351'] #CA19-9
-	CA19_9_Values.pop(0)
-	CA125_Values = raw_data['341'] #CA125
-	CA125_Values.pop(0)
-	CEA_Values = raw_data['301'] #CEA
-	CEA_Values.pop(0)
-	AFP_Values = raw_data['311'] ##AFP
-	AFP_Values.pop(0)
-	PSA_Values = raw_data['2120'] #PSA NEW
-	PSA_Values.pop(0)
-	patient_assigned_values = {}
-	#[psa_value, afp_value, cea_value, ca125_value, ca19_9_value]
-	for index, elem in enumerate (patient_ids):
-		#print(elem + " | anpac id: " + patient_ids[index] + " | cea: " + CEA_Values[index] + " | ca19-9: " + CA19_9_Values[index] + " | ca125: " 
-		#	+ CA125_Values[index] + " | afp: " + AFP_Values[index] + " | psa: " + PSA_Values[index])
-		temp_value = [PSA_Values[index], AFP_Values[index], CEA_Values[index], CA125_Values[index], CA19_9_Values[index]]
-		#print(temp_value)
-		patient_assigned_values[elem] = temp_value
-	return patient_assigned_values
-
-#BATCH ID CREATION STUFF
-#Naming Scheme may change so for future purposes will have to enter in search parameters in method
-def CobasOrCDA (machine_model, cobas_list_models, cda_list_models):
-	if machine_model in cda_list_models:
-		return 'C' 
-	elif machine_model in cobas_list_models:
-		return 'R'
-
-def MachineNumberCDA (machine_model):
-	return machine_model[3]
-
-def MachineNumberCobas (machine_model):
-	return machine_model[len(machine_model) - 1]
-
-def BatchYear ():
-	import time
-	currentYear = time.strftime("%y", time.localtime())
-	return str(currentYear)
-
-def incrementRequsitionAmount (machine_identifier):
-	try:
-		inuse_machine = MachineIds.objects.get(machine_identifier=machine_identifier)
-		inuse_machine.batch_amount = str(int(inuse_machine.batch_amount) + 1).zfill(len(inuse_machine.batch_amount))
-		inuse_machine.save()
-	except Exception as e:
-		print(e)
-
-def getbatchnum (machine_identifier):
-	inuse_machine = MachineIds.objects.get(machine_identifier=machine_identifier)
-	required_batch_id = inuse_machine.batch_amount
-	incrementRequsitionAmount(machine_identifier) #need to increment for future batches
-	return required_batch_id
-
-
-def BatchIDCreate(CobasOrCda, InstrumentNum, Year, batch_num):
-	return str(CobasOrCda) + str(InstrumentNum) + str(Year) + str(batch_num)
-
-def UpdateRequsitionBatchOPMachineModelCDA (cda_requsitions, batch_id, cda_machine_model, operator_name):
-	inc_batch = Batch(batch_id= batch_id, batch_type= 'CDA')
-	inc_batch.save()
-	for req in cda_requsitions:
-		op_req = Patient.objects.get(anpac_id=req)
-		op_req.batch_id_cda = batch_id
-		op_req.cda_model_assigned = cda_machine_model
-		op_req.cda_test_operator = operator_name
-		op_req.save()
-
-def UpdateRequsitionBatchOPMachineModelCobas (cobas_requsitions, batch_id, cobas_machine_model, operator_name):
-	inc_batch = Batch(batch_id= batch_id, batch_type= 'COBAS')
-	inc_batch.save()
-	for req in cobas_requsitions:
-		op_req = Patient.objects.get(anpac_id=req)
-		op_req.batch_id_cobas = batch_id
-		op_req.cobas_model_assigned = cobas_machine_model
-		op_req.cobas_test_operator = operator_name
-		op_req.save()
-
-def extractRequisitionAnpacIDCDA(data):
-	cda_anpac_ids = []
-	for key, value in data.items():
-		if key[0:4] == 'cda:':
-			cda_anpac_ids.append(value)
-	return cda_anpac_ids
-
-def extractRequisitionAnpacIDCobas(data):
-	cobas_anpac_ids = []
-	for key, value in data.items():
-		if key[0:4] == 'cob:':
-			cobas_anpac_ids.append(value)
-	return cobas_anpac_ids
-
-def update_test_status_batch(request):
-	try:
-		cda_batch_status = request['cda_batch_complete']
-		if not cda_batch_status == '':
-			batch_req = Patient.objects.filter(batch_id_cda=cda_batch_status)
-			#print(batch_req)
-			for patient in batch_req:
-				patient = Patient.objects.get(anpac_id=patient.anpac_id)
-				patient.cda_status = 'Complete'
-				patient.save()
-			batch_update = Batch.objects.get(batch_id=cda_batch_status)
-			batch_update.batch_status = 'Complete'
-			batch_update.save()
-	except Exception as e:
-		cobas_batch_status = request['cobas_batch_complete']
-		if not cobas_batch_status == '':
-			batch_req = Patient.objects.filter(batch_id_cobas=cobas_batch_status)
-			for bat_patient in batch_req:
-				patient = Patient.objects.get(anpac_id=bat_patient)
-				if (patient.psa_choice):
-					patient.psa_status = 'Complete'
-				if (patient.afp_choice):
-					patient.afp_status = 'Complete'
-				if (patient.ca125_choice):
-					patient.ca125_status = 'Complete'
-				if (patient.ca19_9_choice):
-					patient.ca19_9_status = 'Complete'
-				if (patient.cea_choice):
-					patient.cea_status = 'Complete'
-				patient.cobas_status = 'Complete'
-				patient.save()
-			batch_update = Batch.objects.get(batch_id=cobas_batch_status)
-			batch_update.batch_status = 'Complete'
-			batch_update.save()
-			return 'cobas'
+#################### Solely Functional that return no HTTPResponses Below ####################
+###########																        ##############
+###########	    	    	Only Pythony Things below						    ##############
+###########																        ##############
+###########																        ##############
 
 def patient_score_update(request):
 	data = request
@@ -465,6 +283,145 @@ def patient_score_update(request):
 			patient_obj.save()
 	EmailNotification(result_entered_patients, 'dennis_lin@anpacbio.com')
 
+def DirectoryExists (path_to_dir):
+	Path(path_to_dir).mkdir(parents=True, exist_ok=True)
+
+def readCSVFile (csv_file):
+	# open the file in universal line ending mode 
+	with open(csv_file, 'rU') as infile:
+		# read the file as a dictionary for each row ({header : value})
+		reader = csv.DictReader(infile)
+		data = {}
+		patient_ids = ()
+		for row in reader:
+			for header, value in row.items():
+				try:
+					data[header].append(value)
+				except KeyError:
+					data[header] = [value]
+	#
+	with open(csv_file, 'r') as f:
+		str_list = [row[6] for row in csv.reader(f)]
+		patient_ids = str_list[2:]
+
+	
+	
+	#print('data:' + str(data))
+
+	Assigned_Patient_Values = AssignPatientValues(patient_ids, data)
+	return Assigned_Patient_Values
+
+def AssignPatientValues (patient_ids, raw_data):
+	# extract the variables you want
+	CA19_9_Values = raw_data['351'] #CA19-9
+	CA19_9_Values.pop(0)
+	CA125_Values = raw_data['341'] #CA125
+	CA125_Values.pop(0)
+	CEA_Values = raw_data['301'] #CEA
+	CEA_Values.pop(0)
+	AFP_Values = raw_data['311'] ##AFP
+	AFP_Values.pop(0)
+	PSA_Values = raw_data['2120'] #PSA NEW
+	PSA_Values.pop(0)
+	patient_assigned_values = {}
+	#[psa_value, afp_value, cea_value, ca125_value, ca19_9_value]
+	for index, elem in enumerate (patient_ids):
+		#print(elem + " | anpac id: " + patient_ids[index] + " | cea: " + CEA_Values[index] + " | ca19-9: " + CA19_9_Values[index] + " | ca125: " 
+		#	+ CA125_Values[index] + " | afp: " + AFP_Values[index] + " | psa: " + PSA_Values[index])
+		temp_value = [PSA_Values[index], AFP_Values[index], CEA_Values[index], CA125_Values[index], CA19_9_Values[index]]
+		#print(temp_value)
+		patient_assigned_values[elem] = temp_value
+	return patient_assigned_values
+
+def updatePatientDatabase (extracted_patient_values):
+	for element in extracted_patient_values:
+		try:
+			Cobas_update_patient = Patient.objects.get(anpac_id=element)
+			temp_list = extracted_patient_values[element]
+			#print(temp_list)
+			#print('Patient: ' + element)
+			Cobas_update_patient.psa_score = temp_list[0]
+			#print('Cobas_update_patient.psa_score: ' + Cobas_update_patient.psa_score)
+			if Cobas_update_patient.psa_choice:
+				#print('PSA for Patient: ' + element + ' Complete')
+				Cobas_update_patient.psa_status = 'ReportReady'
+			
+
+			Cobas_update_patient.afp_score = temp_list[1]
+			#print('Cobas_update_patient.afp_score: ' + Cobas_update_patient.afp_score)
+			if Cobas_update_patient.afp_choice:
+				#print('AFP for Patient: ' + element + ' Complete')
+				Cobas_update_patient.afp_status = 'ReportReady'
+			
+
+			Cobas_update_patient.cea_score = temp_list[2]
+			#print('Cobas_update_patient.cea_score: ' + Cobas_update_patient.cea_score)
+			if Cobas_update_patient.cea_choice:
+				#print('CEA for patient: ' + element + ' Complete')
+				Cobas_update_patient.cea_status = 'ReportReady'
+			
+
+			Cobas_update_patient.ca125_score = temp_list[3]
+			#print('Cobas_update_patient.ca125_score: ' + Cobas_update_patient.ca125_score)
+			if Cobas_update_patient.ca125_choice:
+				#print('CA125 for Patient: ' + element + ' Complete')
+				Cobas_update_patient.ca125_status = 'ReportReady'
+			
+
+			Cobas_update_patient.ca19_9_score = temp_list[4]
+			#print('Cobas_update_patient.ca19_9_score: ' + Cobas_update_patient.ca19_9_score)
+			if Cobas_update_patient.ca19_9_choice:
+				#print('CA19-9 for Patient: ' + element + ' complete')
+				Cobas_update_patient.ca19_9_status = 'ReportReady'
+			test_to_check = []
+			if Cobas_update_patient.psa_choice:
+				test_to_check.append('psa')
+			if Cobas_update_patient.afp_choice:
+				test_to_check.append('afp')
+			if Cobas_update_patient.ca125_choice:
+				test_to_check.append('ca125')
+			if Cobas_update_patient.ca19_9_choice:
+				test_to_check.append('ca199')
+			if Cobas_update_patient.cea_choice:
+				test_to_check.append('cea')
+			#print('test_to_check: ' + str(test_to_check))
+			test_length = len(test_to_check)
+			for test in test_to_check:
+				if test == 'psa':
+					if Cobas_update_patient.psa_status =='ReportReady':
+						test_length -= 1
+				elif test =='afp':
+					if Cobas_update_patient.afp_status =='ReportReady':
+						test_length -= 1
+				elif test =='ca125':
+					if Cobas_update_patient.ca125_status =='ReportReady':
+						test_length -= 1
+				elif test =='ca199':
+					if Cobas_update_patient.ca19_9_status =='ReportReady':
+						test_length -= 1
+				elif test =='cea':
+					if Cobas_update_patient.cea_status =='ReportReady':
+						test_length -= 1
+			if test_length == 0:
+				Cobas_update_patient.cobas_status = 'ReportReady'
+			Cobas_update_patient.save()
+			#If score has been entered, change that status to ReportReady
+		except Exception as e:
+  			print(e)
+
+#Email Notification
+
+def emailListCobas (extracted_patient_values):
+	patient_list = []
+	for element in extracted_patient_values:
+		try:
+			Cobas_update_patient = Patient.objects.get(anpac_id=element)
+			if Cobas_update_patient.cobas_status == 'ReportReady':
+				patient_list.append(element)
+		except Exception as e:
+			print(e)
+	return patient_list
+
 def EmailNotification (anpac_id_list, reciever_email):
 	email_account = EmailAccounts.objects.get(account_name= 'EmailNotification')
 	email = email_account.email_address
@@ -490,13 +447,25 @@ def EmailNotificationBody (anpac_id_list):
 		print('EmailNotificationBody: ' + e)
 	return body
 
-def emailListCobas (extracted_patient_values):
-	patient_list = []
-	for element in extracted_patient_values:
-		try:
-			Cobas_update_patient = Patient.objects.get(anpac_id=element)
-			if Cobas_update_patient.cobas_status == 'ReportReady':
-				patient_list.append(element)
-		except Exception as e:
-			print(e)
-	return patient_list
+def ArchiveRequsition (anpac_id, cobasorcda):
+	archive_patient = Patient.objects.get(anpac_id=anpac_id)
+	#check if CDA has been selected
+	if cobasorcda == 'cobas':
+		if archive_patient.cda_status == 'ResultsApproved' or archive_patient.cda_status == 'Not-Selected':
+			archive_patient.cda_status = 'Archived'
+			archive_patient.save()
+	if cobasorcda == 'cda':
+		if archive_patient.cobas_status =='ResultsApproved' or archive_patient.cobas_status == 'Not-Selected':
+			archive_patient.cobas_status = 'Archived'
+			archive_patient.save()
+
+
+
+
+
+
+
+
+
+
+

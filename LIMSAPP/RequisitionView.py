@@ -50,6 +50,25 @@ def requisition_form(request):
 
 		return render(request,'requisitions/requisition.html',{})
 
+def open_report(request, anpac_id):
+	if request.method == 'POST':
+		#create a form instance from POST data
+		new_form = PatientForm(request.POST)
+		if new_form.is_valid():
+			old_form = Patient.objects.get(anpac_id=anpac_id)
+			final_form = PatientForm(request.POST, instance=old_form)
+			old_form.delete()
+			final_form.save()
+			update_test_status_fromQC(anpac_id)
+			all_items = Patient.objects.all
+			return render(request, 'search_req.html', {"all_items":all_items})
+	else:
+		#print(anpac_id)
+		patient_info = Patient.objects.filter(anpac_id=anpac_id)
+		choices = IndividualTests(patient_info)
+		return render (request, 'QC_edit_req_form.html', {"patient_info":patient_info, "choices": choices})
+
+
 def download_req_excel (request):
 	fl_path = '/Users/dennisl/Desktop/Engineering/SEPrograms/AnpacApps/ANPACLIMS/RequisitionExcelTemplate'
 	filename = 'Requisition_Sheet_Template.xlsx'
