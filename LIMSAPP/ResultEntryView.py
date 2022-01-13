@@ -5,6 +5,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm, PasswordChangeForm
 from .models import Patient, Batch, MachineIds, EmailAccounts
 from .forms import PatientForm, SignUpForm, EditProfileForm
+from LIMSAPP.DirectoryFunctions import DirectoryExists
 from django.contrib import messages
 import json
 import csv
@@ -283,9 +284,6 @@ def patient_score_update(request):
 			patient_obj.save()
 	EmailNotification(result_entered_patients, 'dennis_lin@anpacbio.com')
 
-def DirectoryExists (path_to_dir):
-	Path(path_to_dir).mkdir(parents=True, exist_ok=True)
-
 def readCSVFile (csv_file):
 	# open the file in universal line ending mode 
 	with open(csv_file, 'rU') as infile:
@@ -447,17 +445,6 @@ def EmailNotificationBody (anpac_id_list):
 		print('EmailNotificationBody: ' + e)
 	return body
 
-def ArchiveRequsition (anpac_id, cobasorcda):
-	archive_patient = Patient.objects.get(anpac_id=anpac_id)
-	#check if CDA has been selected
-	if cobasorcda == 'cobas':
-		if archive_patient.cda_status == 'ResultsApproved' or archive_patient.cda_status == 'Not-Selected':
-			archive_patient.cda_status = 'Archived'
-			archive_patient.save()
-	if cobasorcda == 'cda':
-		if archive_patient.cobas_status =='ResultsApproved' or archive_patient.cobas_status == 'Not-Selected':
-			archive_patient.cobas_status = 'Archived'
-			archive_patient.save()
 
 
 

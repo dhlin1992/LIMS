@@ -33,228 +33,14 @@ cda_list_models= ['CDA4.1', 'CDA3.2', 'CDA3.1', 'CDA2.1', 'CDA1.1']
 
 # Create your views here.
 
-
-def import_requisitions(request):
-	today = date.today()
-	date_today = today.strftime("%b-%d-%Y")
-	path_to_dir = "/Users/dennisl/Desktop/Engineering/SEPrograms/AnpacApps/ANPACLIMS/submittedReqExcel/" + date_today + "/"
-	DirectoryExists (path_to_dir)
-	try:
-		if request.method == 'POST' and request.FILES:
-			file = request.FILES['import_req_excel']
-			file_name = default_storage.save(path_to_dir + file.name, file) #saves excel file in directory submittedReqExcel
-			ImportRequisitionsExcel(path_to_dir + file.name, request)
-			messages.success(request, ('Import Succesful! :]'))
-			return redirect('search_req')
-		else:
-			return render(request, 'requisitions/import_requisitions.html',{})
-	except Exception as e:
-		messages.success(request, ('Import exception has occured: ' + str(e) + ' Please contact Admin.'))
-		print(e)
-		return render(request, 'requisitions/import_requisitions.html',{})
-
-def download_req_excel (request):
-	fl_path = '/Users/dennisl/Desktop/Engineering/SEPrograms/AnpacApps/ANPACLIMS/RequisitionExcelTemplate'
-	filename = 'Requisition_Sheet_Template.xlsx'
-	fl = open(fl_path + '/' + filename, "rb")
-	
-	mime_type, _ = mimetypes.guess_type(fl_path)
-	response = HttpResponse(fl, content_type= mime_type)
-	response['Content-Disposition'] = 'attachment; filename=%s' % filename
-	return response
-
-
-def requisition_form(request):
-	if request.method == 'POST':
-		form = PatientForm(request.POST)
-		if form.is_valid():
-			if Patient.objects.filter(anpac_id= request.POST['anpac_id']).exists():
-				messages.success(request, ('Requsition already exists :['))
-				return redirect ('search_req')
-			else:
-				form.save()
-				messages.success(request, ('Requsition Submitted Succesfully :]'))
-				return redirect ('search_req')
-		else:
-			messages.success(request, ('Requsition exception has occured: ' + form.errors.as_data() + ' Please contact Admin.'))
-			#print(form.errors.as_data()) # here you print errors to terminal
-			return render(request, 'home.html', {})
-	else:
-
-		return render(request,'requisitions/requisition.html',{})
-
-def search_req(request):
-	if request.method == 'POST':
-		query = request.POST
-		if query:
-			patient_info = Patient.objects.filter(anpac_id=query['anpac_id'])
-			if patient_info.exists():
-				choices = IndividualTests(patient_info)
-				return render (request, 'QC_edit_req_form.html', {"patient_info": patient_info, "choices": choices})
-			else:
-				search_param = query['anpac_id']
-				messages.warning(request, (search_param + ' not found! Please try again.'))
-				return redirect('search_req')
-	else:
-		all_items = Patient.objects.all
-		return render(request, 'requisitions/search_req.html', {"all_items":all_items})
-
-def open_report(request, anpac_id):
-	if request.method == 'POST':
-		#create a form instance from POST data
-		new_form = PatientForm(request.POST)
-		if new_form.is_valid():
-			old_form = Patient.objects.get(anpac_id=anpac_id)
-			final_form = PatientForm(request.POST, instance=old_form)
-			old_form.delete()
-			final_form.save()
-			update_test_status_fromQC(anpac_id)
-			all_items = Patient.objects.all
-			return render(request, 'search_req.html', {"all_items":all_items})
-	else:
-		#print(anpac_id)
-		patient_info = Patient.objects.filter(anpac_id=anpac_id)
-		choices = IndividualTests(patient_info)
-		return render (request, 'QC_edit_req_form.html', {"patient_info":patient_info, "choices": choices})
-
-def assay(request):
-	cda_tab = ''
-	cobas_tab = ''
-	if request.method == 'POST':
-		post_data = request.POST
-		tab = update_test_status_batch(post_data)
-		#test_status_update(post_data)
-		all_patients = Patient.objects.all()
-		all_batch = Batch.objects.all()
-		cda_tab = ''
-		cobas_tab = ''
-		if tab == 'cobas':
-			cobas_tab = 'active'
-			cda_tab = ''
-		else:
-			cda_tab = 'active'
-		return render(request, 'assay/assay.html', {"all_patients": all_patients, "all_batch": all_batch, "cda_tab": cda_tab, 'cobas_tab': cobas_tab})
-	else:	
-		all_patients = Patient.objects.all()
-		all_batch = Batch.objects.all()
-		cda_tab = 'active'
-		return render(request, 'assay/assay.html', {"all_patients": all_patients, "all_batch": all_batch, "cda_tab": cda_tab, 'cobas_tab': cobas_tab})
-
 def success(request):
 	return render(request, 'successful.html', {})
-
-def html_testing(request):
-	form = Patient.objects.get(anpac_id="tester")
-	choices = IndividualTests(form)
-	return render(request, 'html_testing.html', {"patient_info": form, "choices": choices})
-
-def user_login(request):
-	if request.method == 'POST':
-		username = request.POST['username']
-		password = request.POST['password']
-		user = authenticate(request, username=username, password=password)
-		if user is not None:
-			login(request, user)
-			messages.success(request, ('You have been Logged In!'))
-			return redirect('home')
-		else:
-			messages.success(request, ('Error Logging In - Please Try Again...'))
-			return redirect('user_login')
-	else:
-		return render(request, 'authenticate/login.html', {})
-
-def logout_user(request):
-	logout(request)
-	messages.success(request, ('You have been logged out...'))
-	return redirect ('home')
-
-
-def register_user(request):
-	if request.method == 'POST':
-		form = SignUpForm(request.POST)
-		if form.is_valid():
-			form.save()
-			username = form.cleaned_data['username']
-			password = form.cleaned_data['password1']
-			user = authenticate(username=username, password=password)
-			login(request,user)
-			messages.success(request, ('Register Successful...'))
-			return redirect('home')
-
-	else:
-		form = SignUpForm()
-	context = {'form': form}
-	return render(request, 'authenticate/register.html', context)
-
-def edit_profile(request):
-	if request.method == 'POST':
-		form = EditProfileForm(request.POST, instance=request.user)
-		if form.is_valid():
-			form.save()
-			messages.success(request, ('Edit Successful...'))
-			return redirect('home')
-
-	else:
-		form = EditProfileForm(instance=request.user)
-	context = {'form': form}
-	return render(request, 'authenticate/edit_profile.html', context)
-
-def change_password(request):
-	if request.method == 'POST':
-		form = PasswordChangeForm(data=request.POST, user=request.user)
-		if form.is_valid():
-			form.save()
-			#Save session so users don't have to re log in but might not want to put it in so users can remember their password by relogging in
-			#update_session_auth_hash(request, form.user)
-			messages.success(request, ('Password Change Successful...'))
-			return redirect('home')
-
-	else:
-		form = PasswordChangeForm(user=request.user)
-	context = {'form': form}
-	return render(request, 'authenticate/change_password.html', context)
-	
 
 def cda_assay_status_update(request, status, anpac_id):
 	item = Patient.objects.get(anpac_id = anpac_id)
 	item.cda_status = status
 	item.save()
 	return redirect('assay')
-
-def result_entry(request):
-	today = date.today()
-	date_today = today.strftime("%b-%d-%Y")
-	path_to_dir = "/Users/dennisl/Desktop/Engineering/SEPrograms/AnpacApps/ANPACLIMS/CSVFiles/" + date_today + "/"
-
-	if request.method =='POST' and not request.FILES:
-		patient_score_update(request.POST)
-		return redirect('result_entry')
-
-	elif request.method == 'POST' and request.FILES['csv_file_values']:
-		DirectoryExists (path_to_dir)
-		try:
-			#print("File Detected")
-			#print(request.FILES['csv_file_values'])
-			file = request.FILES['csv_file_values']
-			#file_name = default_storage.save(file.name, file)
-			file_name = default_storage.save(path_to_dir + file.name, file)
-			#print('File saved successfully')
-			extracted_patient_values = readCSVFile(path_to_dir + file.name)
-			updatePatientDatabase(extracted_patient_values)
-			print(emailListCobas(extracted_patient_values))
-			EmailNotification(emailListCobas(extracted_patient_values), 'dennis_lin@anpacbio.com')
-			return redirect('result_entry')
-		except Exception as e:
-			#print('From Result_entry ******')
-			#print(e)
-			return redirect('result_entry')
-	else:
-		all_patients = Patient.objects.all
-		return render(request, 'assay/assay_result_entry.html', {"all_patients": all_patients})
-
-def create_report(request):
-	all_patients = Patient.objects.all()
-	return render(request, 'report/create_report.html', {'all_patients': all_patients})
 
 def patient_cobas_results(request, anpac_id):
 	path_to_dir = "/Users/dennisl/Desktop/Engineering/SEPrograms/AnpacApps/ANPACLIMS/finalreports/" + anpac_id + "/" #save path
@@ -308,49 +94,6 @@ def patient_view_results(request, anpac_id):
 	else:
 		result_patient = Patient.objects.filter(anpac_id=anpac_id)
 		return render(request, 'report/patient_view_results.html',{'result_patient':result_patient})
-
-def op_machine_assignment (request):
-	if request.method == 'POST':
-		data = request.POST
-		try:
-			#if Batch.objects.filter(batch_id=data['batch_id_cda']).exists() or Batch.objects.filter(batch_id=data['batch_id_cobas']).exists():
-			#	messages.success(request, ('Batch ID already entered, please enter a new Batch ID'))
-			#else:
-
-			#Need to check that user made a selection for Machine
-			machine_model_cda = request.POST.get('cda_machine_num', '')
-			machine_model_cobas = request.POST.get('cobas_machine_num', '')
-			cda_requsitions = extractRequisitionAnpacIDCDA(data)
-			cobas_requsitions = extractRequisitionAnpacIDCobas(data)
-
-			# Cobas 28 max samples
-
-			# CDA 40 not including controls
-			if cda_requsitions:
-				if machine_model_cda:
-					#print(BatchIDCreate(CobasOrCDA(machine_model_cda, cobas_list_models, cda_list_models), MachineNumberCDA(machine_model_cda), BatchYear(), getbatchnum(machine_model_cda)))
-					batch_name = BatchIDCreate(CobasOrCDA(machine_model_cda, cobas_list_models, cda_list_models), MachineNumberCDA(machine_model_cda), BatchYear(), getbatchnum(machine_model_cda))
-					UpdateRequsitionBatchOPMachineModelCDA(cda_requsitions, batch_name, machine_model_cda, data['operator_name'])
-					messages.success(request, ('Batch ' + batch_name + ' created successfully.'))
-					return redirect('op_machine_assignment')
-				else:
-					messages.success(request, ('Please select a CDA Machine below.'))
-					return redirect('op_machine_assignment')
-			if cobas_requsitions:
-				if machine_model_cobas:
-					batch_name = BatchIDCreate(CobasOrCDA(machine_model_cobas, cobas_list_models, cda_list_models), MachineNumberCobas(machine_model_cobas), BatchYear(), getbatchnum(machine_model_cobas))
-					UpdateRequsitionBatchOPMachineModelCobas(cobas_requsitions, batch_name, machine_model_cobas, data['operator_name'])
-					messages.success(request, ('Batch ' + batch_name + ' created successfully.'))
-					return redirect('op_machine_assignment')
-				else:
-					messages.success(request, ('Please select a Cobas Machine below.'))
-					return redirect('op_machine_assignment')
-		except Exception as e:
-			print(e)
-		return redirect ('op_machine_assignment')
-	else:
-		all_patients = Patient.objects.all()
-		return render(request, 'assay/op_machine_assignment.html', {'all_patients':all_patients})
 
 def approval_sign_off(request):
 	cda_tab = 'active'
@@ -502,44 +245,6 @@ def email_final_report(request, anpac_id):
 		email_patient = Patient.objects.get(anpac_id=anpac_id)
 		return render (request, 'report/email_final_reports.html', {'email_patient': email_patient})
 
-def archive (request):
-	if request.method == 'POST':
-		data = request.POST
-		search_param = data.get('search-param', '')
-		if search_param == '':
-			messages.warning(request, ('Please enter in a search term'))
-			return render (request, 'report/archive.html', {})
-		else:
-			result = QueryDB(search_param,data['search-Filter'])
-			if str(result) == 'Patient matching query does not exist.':
-				messages.warning(request, ( search_param + ' not found. Please try again!'))
-				result = ''
-			return render (request, 'report/archive.html', {'result':result, 'search_param_found': data['search-Filter'], 'key': search_param})
-	else:
-		return render (request, 'report/archive.html', {})
-
-def view_requisition_readonly (request, anpac_id):
-	patient_info = Patient.objects.filter(anpac_id=anpac_id)
-	choices = IndividualTests(patient_info)
-	return render (request, 'report/view_requisition_readonly.html', {"patient_info":patient_info, "choices": choices})
-
-def devices (request):
-	all_devices = MachineIds.objects.all()
-	cda_status = 'active'
-	cobas_status = ''
-	return render (request, 'product/devices.html', {'all_devices': all_devices, 'cda_status': cda_status})
-
-def ResetBatchAmount(request, machine_identifier):
-	status = ResetDeviceBatchAmount(machine_identifier)
-	cda_status = ''
-	cobas_status = ''
-	all_devices = MachineIds.objects.all()
-	if status == 'cda':
-		cda_status = 'active'
-	else:
-		cobas_status = 'active'
-	return render (request, 'product/devices.html', {'all_devices': all_devices, 'cda_status': cda_status, 'cobas_status': cobas_status})
-
 
 #################### Solely Functional that return no HTTPResponses Below ####################
 ###########																        ##############
@@ -547,15 +252,6 @@ def ResetBatchAmount(request, machine_identifier):
 ###########																        ##############
 ###########																        ##############
 
-
-def ResetDeviceBatchAmount (machine_identifier):
-	try:
-		reset_device = MachineIds.objects.get(machine_identifier=machine_identifier)
-		reset_device.batch_amount = '0001'
-		reset_device.save()
-		return reset_device.machine_type
-	except Exception as e:
-		return e
 
 #filter for searchs in archives
 def QueryDB (key, search_param):
@@ -754,41 +450,6 @@ def update_test_status_batch(request):
 			batch_update.save()
 			return 'cobas'
 			#print(batch_req)
-
-	
-
-
-def test_status_update(request):
-	data = request
-	for stuff in data:
-		if stuff[0:4] == 'cda:':
-			#print(stuff[0:4])
-			#print(stuff[5:])
-			#print(data.getlist(stuff))
-			patient = Patient.objects.get(anpac_id=stuff[4:])
-			patient.cda_status = 'Complete'
-			patient.save()
-			#print('CDA Status Updated')
-		elif stuff[0:6] == 'cobas:':
-			#print(stuff[0:6])
-			#print(stuff[6:])
-			#print(data.getlist(stuff))
-			patient = Patient.objects.get(anpac_id=stuff[6:])
-			if (patient.psa_choice):
-				patient.psa_status = 'Complete'
-			if (patient.afp_choice):
-				patient.afp_status = 'Complete'
-			if (patient.ca125_choice):
-				patient.ca125_status = 'Complete'
-			if (patient.ca19_9_choice):
-				patient.ca19_9_status = 'Complete'
-			if (patient.cea_choice):
-				patient.cea_status = 'Complete'
-			patient.cobas_status = 'Complete'
-			patient.save()
-			#print('Cobas tests saved')
-		else:
-			print('Something is not right in test_status_update')
 
 def patient_score_update(request):
 	data = request
@@ -1090,53 +751,6 @@ def ImportRequisitionsExcel (Path_excel_file, request):
 			if approve_all == 'approve_all':
 				update_test_status_fromQC(df['AnPac Bio ID (Required)'][index])
 	return
-
-def readCSVFile (csv_file):
-	# open the file in universal line ending mode 
-	with open(csv_file, 'rU') as infile:
-		# read the file as a dictionary for each row ({header : value})
-		reader = csv.DictReader(infile)
-		data = {}
-		patient_ids = ()
-		for row in reader:
-			for header, value in row.items():
-				try:
-					data[header].append(value)
-				except KeyError:
-					data[header] = [value]
-	#
-	with open(csv_file, 'r') as f:
-		str_list = [row[6] for row in csv.reader(f)]
-		patient_ids = str_list[2:]
-
-	
-	
-	#print('data:' + str(data))
-
-	Assigned_Patient_Values = AssignPatientValues(patient_ids, data)
-	return Assigned_Patient_Values
-
-def AssignPatientValues (patient_ids, raw_data):
-	# extract the variables you want
-	CA19_9_Values = raw_data['351'] #CA19-9
-	CA19_9_Values.pop(0)
-	CA125_Values = raw_data['341'] #CA125
-	CA125_Values.pop(0)
-	CEA_Values = raw_data['301'] #CEA
-	CEA_Values.pop(0)
-	AFP_Values = raw_data['311'] ##AFP
-	AFP_Values.pop(0)
-	PSA_Values = raw_data['2120'] #PSA NEW
-	PSA_Values.pop(0)
-	patient_assigned_values = {}
-	#[psa_value, afp_value, cea_value, ca125_value, ca19_9_value]
-	for index, elem in enumerate (patient_ids):
-		#print(elem + " | anpac id: " + patient_ids[index] + " | cea: " + CEA_Values[index] + " | ca19-9: " + CA19_9_Values[index] + " | ca125: " 
-		#	+ CA125_Values[index] + " | afp: " + AFP_Values[index] + " | psa: " + PSA_Values[index])
-		temp_value = [PSA_Values[index], AFP_Values[index], CEA_Values[index], CA125_Values[index], CA19_9_Values[index]]
-		#print(temp_value)
-		patient_assigned_values[elem] = temp_value
-	return patient_assigned_values
 
 def updatePatientDatabase (extracted_patient_values):
 	for element in extracted_patient_values:
