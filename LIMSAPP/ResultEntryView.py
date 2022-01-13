@@ -282,7 +282,8 @@ def patient_score_update(request):
 				patient_obj.cobas_status = 'ReportReady'
 				result_entered_patients.append(stuff[4:])
 			patient_obj.save()
-	EmailNotification(result_entered_patients, 'dennis_lin@anpacbio.com')
+	if result_entered_patients:
+		EmailNotification(result_entered_patients, 'dennis_lin@anpacbio.com')
 
 def readCSVFile (csv_file):
 	# open the file in universal line ending mode 
