@@ -46,16 +46,16 @@ Email address: 'example@gmail.com'
 Email Password: Google App Password (not your login password)
 
 # Home Page
-![image](https://user-images.githubusercontent.com/48298105/143933788-8b47db30-b9ab-423a-ba26-ae4dadc1b8a5.png)
+![image](https://user-images.githubusercontent.com/48298105/150206002-7d973298-0634-463b-aabc-5b3c2c121c05.png)
 
 # Login Page
-![image](https://user-images.githubusercontent.com/48298105/143934042-4fda2b3b-952d-47ba-88b1-029f5a85868f.png)
+![image](https://user-images.githubusercontent.com/48298105/150206080-a45f8cb5-7e08-43b1-b110-794f060bfaf5.png)
 
-![image](https://user-images.githubusercontent.com/48298105/143933948-d5968096-dbdb-4af1-910f-a2874829dcf2.png)
+![image](https://user-images.githubusercontent.com/48298105/150206146-99b6ed9f-b122-469a-8e95-0abdbf2c568f.png)
 
 # Register an Account
-![image](https://user-images.githubusercontent.com/48298105/143934137-613831c6-31a6-4e31-b330-437ac0f4c2af.png)
+![image](https://user-images.githubusercontent.com/48298105/150206211-193ddec7-3e3d-4ed1-9be1-eceb992b8882.png)
 
 # Home Page (with Login)
-![image](https://user-images.githubusercontent.com/48298105/143934890-efaa29a2-72b6-461a-a18e-3e203545b6c8.png)
+![image](https://user-images.githubusercontent.com/48298105/150206287-4558de81-2a6f-4fa3-a711-c7c5a58e693d.png)
 
