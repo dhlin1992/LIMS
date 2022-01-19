@@ -12,14 +12,10 @@
 <div class="jumbotron">
 
   <h1 class="display-4">Welcome {% if user.is_authenticated %} {{user.first_name}} {% endif %}!</h1>
-  <p class="lead">AnPac Bio | LIMS</p>
+  <p class="lead">Laboratory Information System</p>
   <hr class="my-4">
 
 <br>
-<div>
-  <a class="btn btn-primary btn-lg" href="https://www.anpacbio.com/" role="button">Learn more about AnPac Bio!</a>
-</div>
-
 <br><br><br>
 {% if user.is_authenticated %}
   <div class="row">

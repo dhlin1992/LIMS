@@ -7,7 +7,7 @@
 
 <ul class="nav nav-tabs" id="myTab" role="tablist">
   <li class="nav-item" role="presentation">
-    <button class="nav-link active" id="Cancer Diagnostics Assay (CDA)" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true">Cancer Diagnostics Assay (CDA)</button>
+    <button class="nav-link active" id="Cancer Diagnostics Assay (CDA)" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true">Assay</button>
   </li>
   <li class="nav-item" role="presentation">
     <button class="nav-link" id="Cobas E411" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="false">Cobas E411</button>
@@ -22,8 +22,8 @@
           <table class="table text-right">
         <thead>
           <tr>
-            <th scope="col">AnPac Bio ID</th>
-            <th scope="col">CDA Score</th>
+            <th scope="col">Identification Number</th>
+            <th scope="col">Assay Score</th>
           </tr>
         </thead>
         <tbody>
@@ -70,7 +70,7 @@
           <table class="table text-right">
         <thead>
           <tr>
-            <th scope="col">AnPac Bio ID</th>
+            <th scope="col">Identification Number</th>
             <th scope="col">PSA</th>
             <th scope="col">AFP</th>
             <th scope="col">CA125</th>
@@ -120,68 +120,5 @@
     </form>
   </div>
 </div>
-
-
-<!-- OLD FORMAT BELOW -->
-<!--<form class="row g-3 text-center" action method="POST" novalidate>
-	{% csrf_token %}
-      <table class="table text-right">
-    <thead>
-      <tr>
-        <th scope="col">AnPac Bio ID</th>
-        <th scope="col">CDA Score</th>
-        <th scope="col">PSA</th>
-        <th scope="col">AFP</th>
-        <th scope="col">CA125</th>
-        <th scope="col">CA19-9</th>
-        <th scope="col">CEA</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% if all_patients %}
-          {% for things in all_patients %}
-            {% if things.req_status == 'Approved' %}
-              {% if things.cda_status == 'Complete' or things.cobas_status == 'Complete' %}
-              <tr>
-                <td>{{things.anpac_id}}</td>
-                <td>
-                	{% if things.cda_status == 'Complete' and things.cda_score == Null %}
-                		<input id="cda_score:{{things.anpac_id}}" name="cda_{{things.anpac_id}}" type="text"  value="">
-                	{% endif %}
-                </td>
-                <td>
-                	{% if things.psa_status == 'Complete' and things.psa_score == Null %}
-                		<input id="psa_score:{{things.anpac_id}}" name="psa_{{things.anpac_id}}" type="text"  value="">
-                	{% endif %}
-                </td>
-                <td>
-                	{% if things.afp_status == 'Complete' and things.afp_score == Null %}
-                		<input id="afp_score:{{things.anpac_id}}" name="afp_{{things.anpac_id}}" type="text"  value="">
-                	{% endif %}
-                </td>
-                <td>
-                	{% if things.ca125_status == 'Complete' and things.ca125_score == Null %}
-                		<input id="ca125_score:{{things.anpac_id}}" name="ca12{{things.anpac_id}}" type="text"  value="">
-                	{% endif %}
-                </td>
-                <td>
-                	{% if things.ca19_9_status == 'Complete' and things.ca19_9_score == Null %}
-                		<input id="ca19_9_score:{{things.anpac_id}}" name="ca19{{things.anpac_id}}" type="text"  value="{{things.ca19_9_score_score}}">
-                	{% endif %}
-                </td>
-                <td>{% if things.cea_status == 'Complete' and things.cea_score == Null %}
-                		<input id="cea_score:{{things.anpac_id}}" name="cea_{{things.anpac_id}}" type="text"  value="">
-                	{% endif %}
-                </td>
-              </tr>
-              {% endif %}
-            {% endif %}
-          {% endfor %}
-      {% endif %}
-    </tbody>
-</table>
-<button class="btn btn-primary" type="submit">Submit Manually</button>
-</form>-->
-
 {% endblock %}
 

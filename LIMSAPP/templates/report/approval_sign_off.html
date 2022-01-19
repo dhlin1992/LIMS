@@ -7,7 +7,7 @@
 
 <ul class="nav nav-tabs" id="myTab" role="tablist">
   <li class="nav-item" role="presentation">
-    <button class="nav-link {{cda_tab}}" id="cda-tab" data-bs-toggle="tab" data-bs-target="#cda" type="button" role="tab" aria-controls="cda" aria-selected="true">Cancer Diagnostic Assay (CDA)</button>
+    <button class="nav-link {{cda_tab}}" id="cda-tab" data-bs-toggle="tab" data-bs-target="#cda" type="button" role="tab" aria-controls="cda" aria-selected="true">Assay</button>
   </li>
   <li class="nav-item" role="presentation">
     <button class="nav-link {{cobas_tab}}" id="cobas-tab" data-bs-toggle="tab" data-bs-target="#cobas" type="button" role="tab" aria-controls="cobas" aria-selected="false">Cobas E411</button>
@@ -35,11 +35,11 @@
             </div>
             <br>
             <div class="row g-3">
-            		<h3><label>CDA Assay: &nbsp;</label><input type="form-control" name="cda_score" id="cda_score" value="{{things.cda_score}}" readonly></h3>
-            		CDA External Comments:
+            		<h3><label>Assay: &nbsp;</label><input type="form-control" name="cda_score" id="cda_score" value="{{things.cda_score}}" readonly></h3>
+            		External Comments:
             		<textarea rows="5" cols="80" id="cda_test_notes" name="cda_test_notes" readonly>{{ things.cda_test_notes }}</textarea>
             	<br>
-              CDA Internal Comments:
+              Internal Comments:
               <textarea rows="5" cols="80" id="cobas_internal_notes" name="cobas_internal_notes" readonly>{{ things.cda_internal_notes }}</textarea>
             </div>
           </div>

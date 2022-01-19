@@ -30,7 +30,7 @@
       </div>-->
 
       <div class="input-group mb-3">
-    <input type="search" placeholder="AnPac Bio ID" class="form-control" aria-label="Text input with dropdown button" name ="anpac_id">
+    <input type="search" placeholder="Identification Number" class="form-control" aria-label="Text input with dropdown button" name ="anpac_id">
     <!--<button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Filters</button>-->
     <button class="btn btn-secondary" type="submit">Search</button>
     <ul class="dropdown-menu dropdown-menu-end">
@@ -57,7 +57,7 @@
                <table class="table">
                <thead>
                  <tr>
-                   <th scope="col">AnPac Bio ID</th>
+                   <th scope="col">Identification Number</th>
                    <th scope="col">Req. Date Created</th>
                    <th scope="col">Req. Last Updated On</th>
                    <th scope="col">Status</th>
@@ -96,7 +96,7 @@
                <table class="table">
                <thead>
                  <tr>
-                   <th scope="col">AnPac Bio ID</th>
+                   <th scope="col">Identification Number</th>
                    <th scope="col">Req. Date Created</th>
                    <th scope="col">Req. Last Updated On</th>
                    <th scope="col">Status</th>
@@ -134,7 +134,7 @@
                <table class="table">
                <thead>
                  <tr>
-                   <th scope="col">AnPac Bio ID</th>
+                   <th scope="col">Identification Number</th>
                    <th scope="col">Req. Date Created</th>
                    <th scope="col">Req. Last Updated On</th>
                    <th scope="col">Status</th>
@@ -173,7 +173,7 @@
                <table class="table">
                <thead>
                  <tr>
-                   <th scope="col">AnPac Bio ID</th>
+                   <th scope="col">Identification Number</th>
                    <th scope="col">Req. Date Created</th>
                    <th scope="col">Req. Last Updated On</th>
                    <th scope="col">Status</th>
@@ -197,116 +197,5 @@
          </div>
        </div>
      </div>
-
-     <!--<h1>Pending</h1>
-    <table class="table">
-    <thead>
-      <tr>
-        <th scope="col">AnPac Bio ID</th>
-        <th scope="col">Req. Date Created</th>
-        <th scope="col">Req. Last Updated On</th>
-        <th scope="col">Status</th>
-        <th scope="col">Date Collected</th>
-      </tr>
-    </thead>
-    <tbody>
-    {% if all_items %}
-      {% for things in all_items %}
-        {% if things.req_status == 'Pending' %}
-          <tr>
-        <th scope="row"><a href="{% url 'open_report' things.anpac_id %}">{{ things.anpac_id }}</th>
-        <td>{{things.req_date_created}}</td>
-         <td>{{things.updated_at}}</td>
-        <td>{{things.req_status}}</td>
-        <td>{{things.date_collected}}</td>
-      </tr>
-        {% endif %}
-    
-      {% endfor %}
-    {% endif %}
-    </tbody>
-  </table>
-
-  <h1>Rejected</h1>
-    <table class="table">
-    <thead>
-      <tr>
-        <th scope="col">AnPac Bio ID</th>
-        <th scope="col">Req. Date Created</th>
-        <th scope="col">Req. Last Updated On</th>
-        <th scope="col">Status</th>
-        <th scope="col">Date Collected</th>
-      </tr>
-    </thead>
-    <tbody>
-    {% if all_items %}
-      {% for things in all_items %}
-        {% if things.req_status == 'Rejected' %}
-          <tr>
-        <th scope="row"><a href="{% url 'open_report' things.anpac_id %}">{{ things.anpac_id }}</th>
-        <td>{{things.req_date_created}}</td>
-        <td>{{things.updated_at}}</td>
-        <td>{{things.req_status}}</td>
-        <td>{{things.date_collected}}</td>
-      </tr>
-        {% endif %}
-      {% endfor %}
-    {% endif %}
-    </tbody>
-  </table>
-
-  <h1>Approved</h1>
-    <table class="table">
-    <thead>
-      <tr>
-        <th scope="col">AnPac Bio ID</th>
-        <th scope="col">Req. Date Created</th>
-        <th scope="col">Req. Last Updated On</th>
-        <th scope="col">Status</th>
-        <th scope="col">Date Collected</th>
-      </tr>
-    </thead>
-    <tbody>
-    {% if all_items %}
-      {% for things in all_items %}
-        {% if things.req_status == 'Approved' %}
-        <tr>
-        <th scope="row"><a href="{% url 'open_report' things.anpac_id %}">{{ things.anpac_id }}</th>
-        <td>{{things.req_date_created}}</td>
-        <td>{{things.updated_at}}</td>
-        <td>{{things.req_status}}</td>
-        <td>{{things.date_collected}}</td>
-      </tr>
-        {% endif %}
-      {% endfor %}
-    {% endif %}
-    </tbody>
-  </table>
-
-    <h1>Recent Requisitions</h1>
-    <table class="table">
-    <thead>
-      <tr>
-        <th scope="col">AnPac Bio ID</th>
-        <th scope="col">Req. Date Created</th>
-        <th scope="col">Req. Last Updated On</th>
-        <th scope="col">Status</th>
-        <th scope="col">Date Collected</th>
-      </tr>
-    </thead>
-    <tbody>
-    {% if all_items %}
-    	{% for things in all_items %}
-   	<tr>
-        <th scope="row"><a href="{% url 'open_report' things.anpac_id %}">{{ things.anpac_id }}</th>
-        <td>{{things.req_date_created}}</td>
-        <td>{{things.updated_at}}</td>
-        <td>{{things.status}}</td>
-        <td>{{things.date_collected}}</td>
-      </tr>
-      {% endfor %}
-    {% endif %}
-    </tbody>
-  </table>-->
   </p>
 {% endblock %}

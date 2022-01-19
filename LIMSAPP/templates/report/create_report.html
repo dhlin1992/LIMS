@@ -7,7 +7,7 @@
 
 <ul class="nav nav-tabs" id="myTab" role="tablist">
   <li class="nav-item" role="presentation">
-    <button class="nav-link active" id="cda-tab" data-bs-toggle="tab" data-bs-target="#cda" type="button" role="tab" aria-controls="cda" aria-selected="true">Cancer Diagnostic Assay (CDA)</button>
+    <button class="nav-link active" id="cda-tab" data-bs-toggle="tab" data-bs-target="#cda" type="button" role="tab" aria-controls="cda" aria-selected="true">Assay</button>
   </li>
   <li class="nav-item" role="presentation">
     <button class="nav-link" id="cobas-tab" data-bs-toggle="tab" data-bs-target="#cobas" type="button" role="tab" aria-controls="cobas" aria-selected="false">Cobas E411</button>
@@ -66,42 +66,4 @@
     </div>
   </div>
 </div>
-
- <!--<form class="d-flex" method='POST'>
- 	<table class="table text-right">
-    <thead>
-      <tr>
-        <th scope="col">AnPac Bio ID</th>
-        <th scope="col">CDA Score</th>
-        <th scope="col">Report (CDA)</th>
-        <th scope="col">PSA</th>
-        <th scope="col">AFP</th>
-        <th scope="col">CA125</th>
-        <th scope="col">CA19-9</th>
-        <th scope="col">CEA</th>
-        <th scope="col">Report (Cobas)</th>
-      </tr>
-  	</thead>
-  	<tbody>
-  	{% if all_patients %}
-  	  {% for things in all_patients %}
-  	    {% if things.cda_status == 'ReportReady' or things.cobas_status == 'ReportReady' %}
-  	      <tr>
-  	    <th scope="row"><a href="{% url 'patient_view_results' things.anpac_id %}" >{{ things.anpac_id }}</th>
-  	    <td>{{things.cda_score}}</td>
-  	    <td><a href="{% url 'patient_cda_results' things.anpac_id %}" target="_blank">View</td>
-  	    <td>{{things.psa_score}}</td>
-  	    <td>{{things.afp_score}}</td>
-  	    <td>{{things.ca125_score}}</td>
-  	    <td>{{things.ca19_9_score}}</td>
-  	    <td>{{things.cea_score}}</td>
-  	    <td><a href="{% url 'patient_cobas_results' things.anpac_id %}" target="_blank">View</td>
-  	  </tr>
-  	    {% endif %}
-  	  {% endfor %}
-  	{% endif %}
-  	</tbody>
-	</table>
- </form>-->
-
 {% endblock %}

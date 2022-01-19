@@ -8,11 +8,11 @@
 		<form class="row g-3" method='POST'>
 			{% csrf_token %}
 		{% if result_patient.0.cda_status == 'ReportReady' %}
-			<h3><label>CDA Assay: &nbsp;</label><input type="form-control" name="cda_score" id="cda_score" value="{{result_patient.0.cda_score}}"></h3>
-			CDA External Comments:
+			<h3><label>Assay: &nbsp;</label><input type="form-control" name="cda_score" id="cda_score" value="{{result_patient.0.cda_score}}"></h3>
+			External Comments:
 			<textarea rows="5" cols="80" id="cda_test_notes" name="cda_test_notes">{{ result_patient.0.cda_test_notes }}</textarea>
 			<br>
-			CDA Internal Comments:
+			Internal Comments:
 			<textarea rows="5" cols="80" id="cda_internal_notes" name="cda_internal_notes">{{ result_patient.0.cda_internal_notes }}</textarea>
 		<br>
 		<div class="col-12">

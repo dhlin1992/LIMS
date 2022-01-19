@@ -6,7 +6,7 @@
 	<div class="row g-3">
       <nav>
         <div class="nav nav-tabs" id="nav-tab" role="tablist">
-          <button class="nav-link {{cda_tab}}" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-home" aria-selected="true">Cancer Diagnostic Assay (CDA)</button>
+          <button class="nav-link {{cda_tab}}" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-home" aria-selected="true">Assay</button>
           <button class="nav-link  {{cobas_tab}}" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-profile" type="button" role="tab" aria-controls="nav-profile" aria-selected="false">Cobas E411</button>
         </div>
       </nav>
@@ -27,17 +27,17 @@
               </h2>
               <div id="{{batch.batch_id}}" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
                 <div class="accordion-body">
-                  <!-- Display CDA Requisition within Batch below -->
+                  <!-- Display Assay Requisition within Batch below -->
                       <table class="table text-right">
                     <thead>
                       <tr>
                         <th scope="col">Req. Create Date</th>
-                        <th scope="col">AnPac Bio ID</th>
+                        <th scope="col">Identification Number</th>
                         <th scope="col">Collection Date</th>
                         <th scope="col">Client</th>
                         <th scope="col">Storage Location</th>
                         <th scope="col">Operator</th>
-                        <th scope="col">CDA Model</th>
+                        <th scope="col">Machine Model</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -91,7 +91,7 @@
                               <thead>
                                 <tr>
                                   <th scope="col">Req. Create Date</th>
-                                  <th scope="col">AnPac Bio ID</th>
+                                  <th scope="col">Identification Number</th>
                                   <th scope="col">Collection Date</th>
                                   <th scope="col">Client</th>
                                   <th scope="col">Storage Location</th>
@@ -136,65 +136,6 @@
                     {% endif %}
         </div>
       </div>
-
-
-
-
-
-
-
-
-
-    <!--
-      <table class="table text-right">
-    <thead>
-      <tr>
-        <th scope="col">Req. Create Date</th>
-        <th scope="col">AnPac Bio ID</th>
-        <th scope="col">Collection Date</th>
-        <th scope="col">Client</th>
-        <th scope="col">CDA</th>
-        <th scope="col">Cobas</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% if all_patients %}
-        {% for things in all_patients %}
-          {% if things.req_status == 'Approved' %}
-            {% if things.cda_status == 'Waiting' or things.cobas_status == 'Waiting' %}
-            {% if things.batch_id_cda or things.batch_id_cobas %}
-            <tr>
-              <td>{{things.req_date_created}}</td>
-              <td>{{things.anpac_id}}</td>
-              <td>{{things.date_collected}}</td>
-              <td>{{things.client_name}}</td>
-                {% if things.cda_assay and things.cda_status == 'Waiting' and things.batch_id_cda %}
-                  <td scope="col"><input class="form-check-input" type="checkbox" name="cda:{{things.anpac_id}}" id="cda_status" value="cda_complete"> CDA</td>
-                {% else %}
-                  {% if things.cda_status == 'Complete' %}
-                  <td>Complete</td>
-                  {% else %}
-                  <td>Operator/Machine Unassigned</td>
-                  {% endif %}
-                {% endif %}
-                {% if things.psa_choice or things.afp_choice or things.ca125_choice or things.ca19_9_choice or things.cea_choice %}
-                    <td scope="col"> {% if things.cobas_status == 'Waiting' and things.batch_id_cobas %}<input class="form-check-input" type="checkbox" name="cobas:{{things.anpac_id}}" id="cobas_status" value="cobas_complete"> {% if things.psa_status == 'Waiting' %} (PSA, Total) {% endif %} {% if things.afp_status == 'Waiting' %} (AFP) {% endif %} {% if things.ca125_status == 'Waiting' %} (CA125) {% endif %} {% if things.ca19_9_status == 'Waiting' %} (CA19-9) {% endif %} {% if things.cea_status == 'Waiting' %} (CEA) {% endif %}{% endif %}</td>
-                {% else %}
-                      {%if things.cobas_status == 'Complete'%}
-                        <td>Complete</td>
-                      {% else %}
-                        <td>Operator/Machine Unassigned</td>
-                      {% endif %}
-                {% endif %}
-            </tr>
-            {% endif %}
-            {% endif %}
-          {% endif %}
-        {% endfor %}
-      {% endif %}
-    </tbody>
-  </table>
-  <button class="btn btn-primary" type="submit">Mark as Complete</button>-->
 </div>
 <br><br><br>
 {% endblock %}
